@@ -141,6 +141,7 @@ namespace Glarduino
 
 		private static unsafe void AppendCharacterBuffer(StringBuilder currentLine, byte[] singleCharBuffer, int numCharsRead)
 		{
+			//It's going to be 1 char but this is fine.
 			fixed(void* charPtr = &singleCharBuffer[0])
 				currentLine.Append((char*)charPtr, numCharsRead);
 		}
