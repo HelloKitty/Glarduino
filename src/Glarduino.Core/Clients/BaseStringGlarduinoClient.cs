@@ -11,7 +11,6 @@ namespace Glarduino
 			IMessageDispatchingStrategy<string> messageDispatcher) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher)
 		{
-
 		}
 	}
 }
