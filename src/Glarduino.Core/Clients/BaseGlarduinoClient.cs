@@ -9,7 +9,7 @@ namespace Glarduino
 	/// <summary>
 	/// Base type for any Glarduino Arduino connected client.
 	/// </summary>
-	public abstract class BaseGlarduinoClient<TMessageType> : IClientConnectable, IClientListenable
+	public abstract class BaseGlarduinoClient<TMessageType> : IClientConnectable, IClientListenable, IDisposable
 	{
 		private ConnectionEvents _ConnectionEvents { get; }
 
@@ -58,7 +58,6 @@ namespace Glarduino
 
 		public Task<bool> ConnectAsync()
 		{
-			//Copy ardity
 			InternallyManagedPort.ReadTimeout = ConnectionInfo.ReadTimeout;
 			InternallyManagedPort.WriteTimeout = ConnectionInfo.WriteTimeout;
 
@@ -95,6 +94,13 @@ namespace Glarduino
 
 			//TODO: Should we assume disconnection just because listening stopped?
 			_ConnectionEvents.InvokeClientDisconnected();
+		}
+
+		public void Dispose()
+		{
+			//We just dispose of the port.
+			InternallyManagedPort?.Close();
+			InternallyManagedPort?.Dispose();
 		}
 	}
 }
