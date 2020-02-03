@@ -48,7 +48,14 @@ namespace Glarduino
 			InternallyManagedPort.ReadTimeout = ConnectionInfo.ReadTimeout;
 			InternallyManagedPort.WriteTimeout = ConnectionInfo.WriteTimeout;
 
-			InternallyManagedPort.Open();
+			try
+			{
+				InternallyManagedPort.Open();
+			}
+			catch (Exception e)
+			{
+				throw new InvalidOperationException($"Failed to connect Glarduino to Port: {ConnectionInfo.PortName}. Reason: {e.Message}", e);
+			}
 
 			//Alert subscribers that the client has connected.
 			if (InternallyManagedPort.IsOpen)
