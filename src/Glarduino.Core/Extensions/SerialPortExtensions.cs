@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
@@ -79,52 +80,62 @@ namespace Glarduino
 			int timeNow;
 			StringBuilder currentLine = new StringBuilder();
 			char lastValueChar = value[value.Length - 1];
+			
+			byte[] _singleCharBuffer = ArrayPool<byte>.Shared.Rent(serialPort.Encoding.GetMaxByteCount(1));
 
-			//TODO: Reduce needless allocation
-			byte[] _singleCharBuffer = new byte[serialPort.Encoding.GetMaxByteCount(1)];
-
-			while(true)
+			try
 			{
-				if(serialPort.ReadTimeout == InfiniteTimeout)
+				while (true)
 				{
-					//One will be read. when completed
-					await serialPort.ReadAsync(_singleCharBuffer, 0, 1);
-					numCharsRead = 1;
-				}
-				else if(serialPort.ReadTimeout - timeUsed >= 0)
-				{
-					timeNow = Environment.TickCount;
-					await serialPort.ReadAsync(_singleCharBuffer, 0, 1, new CancellationTokenSource(serialPort.ReadTimeout - timeUsed).Token);
-					numCharsRead = 1;
-					timeUsed += Environment.TickCount - timeNow;
-				}
-				else
-					throw new TimeoutException();
-
-				Debug.Assert((numCharsRead > 0), "possible bug in ReadBufferIntoChars, reading surrogate char?");
-				AppendCharacterBuffer(currentLine, _singleCharBuffer, numCharsRead);
-
-				if(lastValueChar == (char)_singleCharBuffer[numCharsRead - 1] && (currentLine.Length >= value.Length))
-				{
-					// we found the last char in the value string.  See if the rest is there.  No need to
-					// recompare the last char of the value string.
-					bool found = true;
-					for(int i = 2; i <= value.Length; i++)
+					if (serialPort.ReadTimeout == InfiniteTimeout)
 					{
-						if(value[value.Length - i] != currentLine[currentLine.Length - i])
+						//One will be read. when completed
+						await serialPort.ReadAsync(_singleCharBuffer, 0, 1);
+						numCharsRead = 1;
+					}
+					else if (serialPort.ReadTimeout - timeUsed >= 0)
+					{
+						timeNow = Environment.TickCount;
+						await serialPort.ReadAsync(_singleCharBuffer, 0, 1, new CancellationTokenSource(serialPort.ReadTimeout - timeUsed).Token);
+						numCharsRead = 1;
+						timeUsed += Environment.TickCount - timeNow;
+					}
+					else
+						throw new TimeoutException();
+
+					Debug.Assert((numCharsRead > 0), "possible bug in ReadBufferIntoChars, reading surrogate char?");
+					AppendCharacterBuffer(currentLine, _singleCharBuffer, numCharsRead);
+
+					if (lastValueChar == (char) _singleCharBuffer[numCharsRead - 1] && (currentLine.Length >= value.Length))
+					{
+						// we found the last char in the value string.  See if the rest is there.  No need to
+						// recompare the last char of the value string.
+						bool found = true;
+						for (int i = 2; i <= value.Length; i++)
 						{
-							found = false;
-							break;
+							if (value[value.Length - i] != currentLine[currentLine.Length - i])
+							{
+								found = false;
+								break;
+							}
+						}
+
+						if (found)
+						{
+							// we found the search string.  Exclude it from the return string.
+							string ret = currentLine.ToString(0, currentLine.Length - value.Length);
+							return ret;
 						}
 					}
-
-					if(found)
-					{
-						// we found the search string.  Exclude it from the return string.
-						string ret = currentLine.ToString(0, currentLine.Length - value.Length);
-						return ret;
-					}
 				}
+			}
+			catch (Exception e)
+			{
+				throw;
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(_singleCharBuffer, true);
 			}
 		}
 
