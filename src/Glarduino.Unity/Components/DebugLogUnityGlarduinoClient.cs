@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public sealed class DebugLogGlarduinoClient : MonoBehaviour
+	public sealed class DebugLogUnityGlarduinoClient : MonoBehaviour
 	{
 		[SerializeField]
 		[Tooltip("Port name with which the SerialPort object will be created.")]
@@ -19,6 +19,7 @@ namespace Glarduino
 		private async Task Start()
 		{
 			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(portName, baudRate), new StringMessageDeserializerStrategy(), new DebugLogStringMessageDispatchingStrategy());
+			await client.ConnectAsync();
 			await client.StartListeningAsync();
 		}
 	}
