@@ -18,6 +18,9 @@ namespace Glarduino
 		/// <returns>Awaitable for when the operation is completed.</returns>
 		public static async Task ReadAsync(this SerialPort serialPort, byte[] buffer, int offset, int count)
 		{
+			if (!serialPort.IsOpen)
+				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
+
 			var bytesRead = 0;
 
 			while (bytesRead < count)
@@ -25,13 +28,6 @@ namespace Glarduino
 				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, bytesRead + offset, count - bytesRead);
 				bytesRead += readBytes;
 			}
-		}
-
-		public static async Task<byte[]> ReadAsync(this SerialPort serialPort, int count)
-		{
-			var buffer = new byte[count];
-			await serialPort.ReadAsync(buffer, 0, count);
-			return buffer;
 		}
 	}
 }
