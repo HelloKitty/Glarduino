@@ -19,6 +19,10 @@ namespace Glarduino
 		private async Task Start()
 		{
 			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(portName, baudRate), new StringMessageDeserializerStrategy(), new DebugLogStringMessageDispatchingStrategy());
+
+			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {portName} connected.");
+			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {portName} disconnected.");
+
 			await client.ConnectAsync();
 			await client.StartListeningAsync();
 		}
