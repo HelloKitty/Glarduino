@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Glarduino
 {
+	/// <summary>
+	/// Contract for types that are client connectable.
+	/// </summary>
 	public interface IClientConnectable
 	{
 		/// <summary>
