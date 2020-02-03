@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glarduino
@@ -15,8 +16,9 @@ namespace Glarduino
 		/// <param name="buffer">The buffer to read into.</param>
 		/// <param name="offset">The offset into the buffer.</param>
 		/// <param name="count">The count of bytes to read.</param>
+		/// <param name="cancellationToken">Optional cancellation token for the read operation.</param>
 		/// <returns>Awaitable for when the operation is completed.</returns>
-		public static async Task ReadAsync(this SerialPort serialPort, byte[] buffer, int offset, int count)
+		public static async Task ReadAsync(this SerialPort serialPort, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (!serialPort.IsOpen)
 				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
@@ -25,7 +27,7 @@ namespace Glarduino
 
 			while (bytesRead < count)
 			{
-				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, bytesRead + offset, count - bytesRead);
+				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, bytesRead + offset, count - bytesRead, cancellationToken);
 				bytesRead += readBytes;
 			}
 		}
