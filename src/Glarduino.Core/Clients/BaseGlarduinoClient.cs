@@ -11,6 +11,8 @@ namespace Glarduino
 	/// </summary>
 	public abstract class BaseGlarduinoClient : IClientConnectable
 	{
+		private ConnectionEvents _ConnectionEvents { get; }
+
 		/// <summary>
 		/// The internally managed <see cref="SerialPort"/> that represents
 		/// the potentially connected port to the Aurdino device.
@@ -27,10 +29,17 @@ namespace Glarduino
 		/// </summary>
 		public bool isConnected => InternallyManagedPort.IsOpen;
 
+		/// <summary>
+		/// Container for subscribable connection events for the client.
+		/// </summary>
+		public IConnectionEventsSubscribable ConnectionEvents => _ConnectionEvents;
+
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo)
 		{
 			ConnectionInfo = connectionInfo ?? throw new ArgumentNullException(nameof(connectionInfo));
 			InternallyManagedPort = new SerialPort(connectionInfo.PortName, connectionInfo.BaudRate);
+
+			_ConnectionEvents = new ConnectionEvents();
 		}
 
 		public Task<bool> ConnectAsync()
@@ -40,6 +49,10 @@ namespace Glarduino
 			InternallyManagedPort.WriteTimeout = ConnectionInfo.WriteTimeout;
 
 			InternallyManagedPort.Open();
+
+			//Alert subscribers that the client has connected.
+			if (InternallyManagedPort.IsOpen)
+				_ConnectionEvents.InvokeClientConnected();
 
 			return Task.FromResult(InternallyManagedPort.IsOpen);
 		}
