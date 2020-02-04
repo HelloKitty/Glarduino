@@ -4,12 +4,20 @@ using System.Text;
 
 namespace Glarduino
 {
-	public abstract class BaseStringGlarduinoClient : BaseGlarduinoClient<string>
+	public class BaseStringGlarduinoClient : BaseGlarduinoClient<string>
 	{
-		protected BaseStringGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
+		public BaseStringGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<string> messageDeserializer, 
 			IMessageDispatchingStrategy<string> messageDispatcher) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher)
+		{
+		}
+
+		public BaseStringGlarduinoClient(ArduinoPortConnectionInfo connectionInfo,
+			IMessageDeserializerStrategy<string> messageDeserializer,
+			IMessageDispatchingStrategy<string> messageDispatcher,
+			ICommunicationPort comPort)
+			: base(connectionInfo, messageDeserializer, messageDispatcher, comPort)
 		{
 		}
 	}
