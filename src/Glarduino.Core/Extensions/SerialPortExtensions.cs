@@ -43,10 +43,6 @@ namespace Glarduino
 			{
 				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, i + offset, count - i, cancellationToken);
 
-				//TODO: Better logging of failure
-				if(readBytes <= 0)
-					throw new EndOfStreamException("EOF");
-
 				i += readBytes;
 			}
 		}
@@ -78,8 +74,8 @@ namespace Glarduino
 			StringBuilder currentLine = new StringBuilder();
 			char lastValueChar = value;
 
-			int charSizeCount = serialPort.Encoding.GetMaxByteCount(1);
-			byte[] _singleCharBuffer = ArrayPool<byte>.Shared.Rent(serialPort.Encoding.GetMaxByteCount(1));
+			int charSizeCount = serialPort.Encoding.IsSingleByte ? 1 : serialPort.Encoding.GetMaxByteCount(1);
+			byte[] _singleCharBuffer = ArrayPool<byte>.Shared.Rent(charSizeCount);
 
 			try
 			{
@@ -99,7 +95,8 @@ namespace Glarduino
 					else
 						throw new TimeoutException();
 
-					char charVal = AppendCharacterBuffer(currentLine, _singleCharBuffer);
+					char charVal = ComputeCharValue(serialPort.Encoding, _singleCharBuffer, charSizeCount);
+					currentLine.Append(charVal);
 
 					if (lastValueChar == (char)charVal)
 					{
@@ -119,14 +116,22 @@ namespace Glarduino
 			}
 		}
 
-		private static unsafe char AppendCharacterBuffer(StringBuilder currentLine, byte[] singleCharBuffer)
+		private static unsafe char ComputeCharValue(Encoding serialPortEncoding, byte[] singleCharBuffer, int charSizeCount)
 		{
+			if(charSizeCount == 1)
+			{
+				char outChar = (char)singleCharBuffer[0];
+				return outChar;
+			}
+			else
+				throw new NotImplementedException($"TODO: Support other encodings: {serialPortEncoding.EncodingName} not supported yet.");
+
+			/*char outValue;
 			//It's going to be 1 char but this is fine.
 			fixed (byte* charPtr = singleCharBuffer)
 			{
-				currentLine.Append((char*)charPtr, 1);
-				return *(char*) charPtr;
-			}
+				
+			}*/
 		}
 	}
 }
