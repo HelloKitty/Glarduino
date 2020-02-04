@@ -48,62 +48,34 @@ namespace Glarduino
 		}
 
 		/// <summary>
-		/// Based on: https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.IO.Ports/src/System/IO/Ports/SerialPort.cs#L1001
+		/// Read a line from the SerialPort asynchronously
 		/// </summary>
-		/// <param name="serialPort"></param>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Task<string> ReadLineAsync(this ICommunicationPort serialPort)
+		/// <param name="serialPort">The port to read data from</param>
+		/// <returns>A line read from the input</returns>
+		public static async Task<string> ReadLineAsync(this ICommunicationPort serialPort)
 		{
-			return ReadToAsync(serialPort, DefaultNewLine);
-		}
-
-		/// <summary>
-		/// Base on: https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.IO.Ports/src/System/IO/Ports/SerialPort.cs#L1006
-		/// </summary>
-		/// <param name="serialPort"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static async Task<string> ReadToAsync(this ICommunicationPort serialPort, char value)
-		{
-			if(!serialPort.IsOpen)
-				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
-
-			int timeUsed = 0;
-			int timeNow;
-			StringBuilder currentLine = new StringBuilder();
-			char lastValueChar = value;
+			if(!serialPort.Encoding.IsSingleByte)
+				throw new InvalidOperationException($"TODO: Cannot support {serialPort.Encoding.EncodingName}. Only supports 1 byte ASCII right now.");
 
 			int charSizeCount = serialPort.Encoding.IsSingleByte ? 1 : serialPort.Encoding.GetMaxByteCount(1);
 			byte[] _singleCharBuffer = ArrayPool<byte>.Shared.Rent(charSizeCount);
+			StringBuilder builder = new StringBuilder();
 
 			try
 			{
+				// Read the input one byte at a time, convert the
+				// byte into a char, add that char to the overall
+				// response string, once the response string ends
+				// with the line ending then stop reading
 				while (true)
 				{
-					if (serialPort.ReadTimeout == InfiniteTimeout)
-					{
-						//One will be read. when completed
-						await serialPort.ReadAsync(_singleCharBuffer, 0, charSizeCount);
-					}
-					else if (serialPort.ReadTimeout - timeUsed >= 0)
-					{
-						timeNow = Environment.TickCount;
-						await serialPort.ReadAsync(_singleCharBuffer, 0, charSizeCount, new CancellationTokenSource(serialPort.ReadTimeout - timeUsed).Token);
-						timeUsed += Environment.TickCount - timeNow;
-					}
-					else
-						throw new TimeoutException();
+					await serialPort.ReadAsync(_singleCharBuffer, 0, 1);
 
-					char charVal = ComputeCharValue(serialPort.Encoding, _singleCharBuffer, charSizeCount);
-					currentLine.Append(charVal);
+					builder.Append((char) _singleCharBuffer[0]);
 
-					if (lastValueChar == (char)charVal)
-					{
-						// we found the search string.  Exclude it from the return string.
-						string ret = currentLine.ToString(0, currentLine.Length - 1);
-						return ret;
-					}
+					if (builder[builder.Length - 1] == DefaultNewLine)
+						// Truncate the line ending
+						return builder.ToString(0, builder.Length - 1);
 				}
 			}
 			catch (Exception e)
@@ -114,24 +86,6 @@ namespace Glarduino
 			{
 				ArrayPool<byte>.Shared.Return(_singleCharBuffer, true);
 			}
-		}
-
-		private static unsafe char ComputeCharValue(Encoding serialPortEncoding, byte[] singleCharBuffer, int charSizeCount)
-		{
-			if(charSizeCount == 1)
-			{
-				char outChar = (char)singleCharBuffer[0];
-				return outChar;
-			}
-			else
-				throw new NotImplementedException($"TODO: Support other encodings: {serialPortEncoding.EncodingName} not supported yet.");
-
-			/*char outValue;
-			//It's going to be 1 char but this is fine.
-			fixed (byte* charPtr = singleCharBuffer)
-			{
-				
-			}*/
 		}
 	}
 }
