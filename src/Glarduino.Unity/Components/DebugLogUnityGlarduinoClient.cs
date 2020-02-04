@@ -6,46 +6,25 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public sealed class DebugLogUnityGlarduinoClient : MonoBehaviour
+	public sealed class DebugLogUnityGlarduinoClient : BaseUnityGlarduinoAdapterClient
 	{
-		[SerializeField]
-		[Tooltip("Port name with which the SerialPort object will be created.")]
-		private string portName = "COM3";
+		private IDisposable _currentClient { get; set; }
 
-		[SerializeField]
-		[Tooltip("Baud rate that the serial device is using to transmit data.")]
-		private int baudRate = 9600;
-
-		private IDisposable CurrentClient;
+		protected override IDisposable CurrentClient => _currentClient;
 
 		private async Task Start()
 		{
-			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(portName, baudRate), new StringMessageDeserializerStrategy(), new DebugLogStringMessageDispatchingStrategy());
+			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new StringMessageDeserializerStrategy(), new DebugLogStringMessageDispatchingStrategy());
 
-			CurrentClient = client;
-			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {portName} connected.");
-			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {portName} disconnected.");
+			_currentClient = client;
+			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {PortName} connected.");
+			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
 
 			await client.ConnectAsync()
 				.ConfigureAwait(false);
 
 			await client.StartListeningAsync()
 				.ConfigureAwait(false);
-		}
-
-		void OnDisable()
-		{
-			//When disabled we should just dispose.
-			CurrentClient?.Dispose();
-		}
-
-		/// <summary>
-		/// See: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
-		/// </summary>
-		void OnApplicationQuit()
-		{
-			//When disabled we should just dispose.
-			CurrentClient?.Dispose();
 		}
 	}
 }
