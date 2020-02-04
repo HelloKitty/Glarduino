@@ -9,7 +9,7 @@ namespace Glarduino
 {
 	public sealed class StringMessageDeserializerStrategy : IMessageDeserializerStrategy<string>
 	{
-		public Task<string> ReadMessageAsync(SerialPort serialPort, CancellationToken cancellationToken = default(CancellationToken))
+		public Task<string> ReadMessageAsync(ICommunicationPort serialPort, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			return serialPort.ReadLineAsync();
 		}

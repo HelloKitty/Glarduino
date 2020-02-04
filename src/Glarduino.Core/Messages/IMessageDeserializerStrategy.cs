@@ -20,6 +20,6 @@ namespace Glarduino
 		/// <param name="serialPort">The serial port to read from.</param>
 		/// <param name="cancellationToken">Optional cancel token.</param>
 		/// <returns>The deserialized message.</returns>
-		Task<TMessageType> ReadMessageAsync(SerialPort serialPort, CancellationToken cancellationToken = default(CancellationToken));
+		Task<TMessageType> ReadMessageAsync(ICommunicationPort serialPort, CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

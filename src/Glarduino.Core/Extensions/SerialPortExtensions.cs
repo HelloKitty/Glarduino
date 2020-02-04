@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Glarduino
 		/// <summary>
 		/// From https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.IO.Ports/src/System/IO/Ports/SerialPort.cs#L36
 		/// </summary>
-		private const string DefaultNewLine = "\n";
+		private const char DefaultNewLine = '\n';
 
 		public const int InfiniteTimeout = -1;
 
@@ -28,7 +29,7 @@ namespace Glarduino
 		/// <param name="count">The count of bytes to read.</param>
 		/// <param name="cancellationToken">Optional cancellation token for the read operation.</param>
 		/// <returns>Awaitable for when the operation is completed.</returns>
-		public static async Task ReadAsync(this SerialPort serialPort, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default(CancellationToken))
+		public static async Task ReadAsync(this ICommunicationPort serialPort, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (serialPort == null) throw new ArgumentNullException(nameof(serialPort));
 			if (buffer == null) throw new ArgumentNullException(nameof(buffer));
@@ -38,12 +39,15 @@ namespace Glarduino
 			if (!serialPort.IsOpen)
 				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
 
-			var bytesRead = 0;
-
-			while (bytesRead < count)
+			for (int i = 0; i < count;)
 			{
-				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, bytesRead + offset, count - bytesRead, cancellationToken);
-				bytesRead += readBytes;
+				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, i + offset, count - i, cancellationToken);
+
+				//TODO: Better logging of failure
+				if(readBytes <= 0)
+					throw new EndOfStreamException("EOF");
+
+				i += readBytes;
 			}
 		}
 
@@ -53,7 +57,7 @@ namespace Glarduino
 		/// <param name="serialPort"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Task<string> ReadLineAsync(this SerialPort serialPort)
+		public static Task<string> ReadLineAsync(this ICommunicationPort serialPort)
 		{
 			return ReadToAsync(serialPort, DefaultNewLine);
 		}
@@ -64,23 +68,17 @@ namespace Glarduino
 		/// <param name="serialPort"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static async Task<string> ReadToAsync(this SerialPort serialPort, string value)
+		public static async Task<string> ReadToAsync(this ICommunicationPort serialPort, char value)
 		{
 			if(!serialPort.IsOpen)
 				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
 
-			if(value == null)
-				throw new ArgumentNullException(nameof(value));
-
-			if(value.Length == 0)
-				throw new ArgumentException($"Provided newline: {value} is invalid.", nameof(value));
-
-			int numCharsRead;
 			int timeUsed = 0;
 			int timeNow;
 			StringBuilder currentLine = new StringBuilder();
-			char lastValueChar = value[value.Length - 1];
-			
+			char lastValueChar = value;
+
+			int charSizeCount = serialPort.Encoding.GetMaxByteCount(1);
 			byte[] _singleCharBuffer = ArrayPool<byte>.Shared.Rent(serialPort.Encoding.GetMaxByteCount(1));
 
 			try
@@ -90,42 +88,24 @@ namespace Glarduino
 					if (serialPort.ReadTimeout == InfiniteTimeout)
 					{
 						//One will be read. when completed
-						await serialPort.ReadAsync(_singleCharBuffer, 0, 1);
-						numCharsRead = 1;
+						await serialPort.ReadAsync(_singleCharBuffer, 0, charSizeCount);
 					}
 					else if (serialPort.ReadTimeout - timeUsed >= 0)
 					{
 						timeNow = Environment.TickCount;
-						await serialPort.ReadAsync(_singleCharBuffer, 0, 1, new CancellationTokenSource(serialPort.ReadTimeout - timeUsed).Token);
-						numCharsRead = 1;
+						await serialPort.ReadAsync(_singleCharBuffer, 0, charSizeCount, new CancellationTokenSource(serialPort.ReadTimeout - timeUsed).Token);
 						timeUsed += Environment.TickCount - timeNow;
 					}
 					else
 						throw new TimeoutException();
 
-					Debug.Assert((numCharsRead > 0), "possible bug in ReadBufferIntoChars, reading surrogate char?");
-					AppendCharacterBuffer(currentLine, _singleCharBuffer, numCharsRead);
+					char charVal = AppendCharacterBuffer(currentLine, _singleCharBuffer);
 
-					if (lastValueChar == (char) _singleCharBuffer[numCharsRead - 1] && (currentLine.Length >= value.Length))
+					if (lastValueChar == (char)charVal)
 					{
-						// we found the last char in the value string.  See if the rest is there.  No need to
-						// recompare the last char of the value string.
-						bool found = true;
-						for (int i = 2; i <= value.Length; i++)
-						{
-							if (value[value.Length - i] != currentLine[currentLine.Length - i])
-							{
-								found = false;
-								break;
-							}
-						}
-
-						if (found)
-						{
-							// we found the search string.  Exclude it from the return string.
-							string ret = currentLine.ToString(0, currentLine.Length - value.Length);
-							return ret;
-						}
+						// we found the search string.  Exclude it from the return string.
+						string ret = currentLine.ToString(0, currentLine.Length - 1);
+						return ret;
 					}
 				}
 			}
@@ -139,11 +119,14 @@ namespace Glarduino
 			}
 		}
 
-		private static unsafe void AppendCharacterBuffer(StringBuilder currentLine, byte[] singleCharBuffer, int numCharsRead)
+		private static unsafe char AppendCharacterBuffer(StringBuilder currentLine, byte[] singleCharBuffer)
 		{
 			//It's going to be 1 char but this is fine.
-			fixed(void* charPtr = &singleCharBuffer[0])
-				currentLine.Append((char*)charPtr, numCharsRead);
+			fixed (byte* charPtr = singleCharBuffer)
+			{
+				currentLine.Append((char*)charPtr, 1);
+				return *(char*) charPtr;
+			}
 		}
 	}
 }
