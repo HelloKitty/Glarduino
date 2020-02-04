@@ -107,7 +107,7 @@ namespace Glarduino
 			_ConnectionEvents.InvokeClientDisconnected();
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			//We just dispose of the port.
 			InternallyManagedPort?.Close();
