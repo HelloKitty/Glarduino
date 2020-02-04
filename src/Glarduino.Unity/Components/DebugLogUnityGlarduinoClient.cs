@@ -26,8 +26,11 @@ namespace Glarduino
 			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {portName} connected.");
 			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {portName} disconnected.");
 
-			await client.ConnectAsync();
-			await client.StartListeningAsync();
+			await client.ConnectAsync()
+				.ConfigureAwait(false);
+
+			await client.StartListeningAsync()
+				.ConfigureAwait(false);
 		}
 
 		void OnDisable()

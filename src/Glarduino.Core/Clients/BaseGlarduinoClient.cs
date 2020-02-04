@@ -94,11 +94,13 @@ namespace Glarduino
 			while (isConnected)
 			{
 				//TODO: Handle cancellation tokens better.
-				TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort);
+				TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort)
+					.ConfigureAwait(false);
 
 				//A message was recieved and deserialized as the strategy implemented.
 				//Therefore we should assume we have a valid message and then pass it to the message dispatching strategy.
-				await MessageDispatcher.DispatchMessageAsync(message);
+				await MessageDispatcher.DispatchMessageAsync(message)
+					.ConfigureAwait(false);
 			}
 
 			//TODO: Should we assume disconnection just because listening stopped?

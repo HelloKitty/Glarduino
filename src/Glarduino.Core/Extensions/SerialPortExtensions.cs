@@ -41,7 +41,8 @@ namespace Glarduino
 
 			for (int i = 0; i < count;)
 			{
-				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, i + offset, count - i, cancellationToken);
+				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, i + offset, count - i, cancellationToken)
+					.ConfigureAwait(false);
 
 				i += readBytes;
 			}
@@ -69,7 +70,8 @@ namespace Glarduino
 				// with the line ending then stop reading
 				while (true)
 				{
-					await serialPort.ReadAsync(_singleCharBuffer, 0, 1);
+					await serialPort.ReadAsync(_singleCharBuffer, 0, 1)
+						.ConfigureAwait(false);
 
 					builder.Append((char) _singleCharBuffer[0]);
 
