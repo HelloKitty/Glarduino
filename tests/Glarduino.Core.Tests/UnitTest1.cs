@@ -14,7 +14,7 @@ namespace Glarduino.Tests
 			//Arrange
 			MemoryStream sharedStream = new MemoryStream();
 			TestCommunicationPortAdapter port = new TestCommunicationPortAdapter(sharedStream);
-			BaseStringGlarduinoClient client = new BaseStringGlarduinoClient(new ArduinoPortConnectionInfo("COM4", 4000), new StringMessageDeserializerStrategy(), new TestStringMessageCaptureStrategy(), port);
+			BaseStringGlarduinoClient client = new BaseStringGlarduinoClient(new ArduinoPortConnectionInfo("COM4", 4000), new StringMessageDeserializerStrategy(), new TestStringMessageCaptureStrategy("Hello"), port);
 			sharedStream.Write(port.Encoding.GetBytes("Hello\n"));
 			sharedStream.Position = 0;
 
