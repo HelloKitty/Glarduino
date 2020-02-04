@@ -17,7 +17,7 @@ namespace Glarduino
 		/// The internally managed <see cref="SerialPort"/> that represents
 		/// the potentially connected port to the Aurdino device.
 		/// </summary>
-		protected SerialPort InternallyManagedPort { get; } = null;
+		protected ICommunicationPort InternallyManagedPort { get; } = null;
 
 		/// <summary>
 		/// The connection info used for the <see cref="InternallyManagedPort"/>.
@@ -47,11 +47,20 @@ namespace Glarduino
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher)
+			: this(connectionInfo, messageDeserializer, messageDispatcher, new SerialPortCommunicationPortAdapter(new SerialPort(connectionInfo.PortName, connectionInfo.BaudRate)))
+		{
+
+		}
+
+		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo,
+			IMessageDeserializerStrategy<TMessageType> messageDeserializer,
+			IMessageDispatchingStrategy<TMessageType> messageDispatcher,
+			ICommunicationPort comPort)
 		{
 			ConnectionInfo = connectionInfo ?? throw new ArgumentNullException(nameof(connectionInfo));
 			MessageDeserializer = messageDeserializer ?? throw new ArgumentNullException(nameof(messageDeserializer));
 			MessageDispatcher = messageDispatcher ?? throw new ArgumentNullException(nameof(messageDispatcher));
-			InternallyManagedPort = new SerialPort(connectionInfo.PortName, connectionInfo.BaudRate);
+			InternallyManagedPort = comPort ?? throw new ArgumentNullException(nameof(comPort));
 
 			_ConnectionEvents = new ConnectionEvents();
 		}
