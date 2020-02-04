@@ -7,6 +7,8 @@ namespace Glarduino
 {
 	public sealed class UnityStringGlarduinoClient : BaseStringGlarduinoClient
 	{
+		private bool unityDisposed = false;
+
 		public UnityStringGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<string> messageDeserializer, 
 			IMessageDispatchingStrategy<string> messageDispatcher) 
@@ -16,6 +18,12 @@ namespace Glarduino
 		}
 
 		//Override to only indicate being connected if the application is in playmode too.
-		public override bool isConnected => base.isConnected && Application.isPlaying;
+		public override bool isConnected => base.isConnected && !unityDisposed;
+
+		public override void Dispose()
+		{
+			unityDisposed = true;
+			base.Dispose();
+		}
 	}
 }
