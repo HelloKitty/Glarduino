@@ -11,6 +11,9 @@ namespace Glarduino
 		[SerializeField]
 		private MonoBehaviour Listener;
 
+		[SerializeField]
+		private int ExpectedQuaternionCount = 0;
+
 		void Awake()
 		{
 			if(!Listener is IMessageListener<RecyclableArraySegment<Quaternion>>)
@@ -22,7 +25,7 @@ namespace Glarduino
 			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<RecyclableArraySegment<Quaternion>>>();
 			dispatcher.Listener = (IMessageListener<RecyclableArraySegment<Quaternion>>)Listener;
 
-			UnityQuaternionSegmentGlarduinoClient client = new UnityQuaternionSegmentGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new QuaternionSegmentMessageDeserializerStrategy(), dispatcher);
+			UnityQuaternionSegmentGlarduinoClient client = new UnityQuaternionSegmentGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new HarcodedSizeQuaternionSegmentMessageDeserializerStrategy(ExpectedQuaternionCount), dispatcher);
 
 			await StartClient(client)
 				.ConfigureAwait(false);
