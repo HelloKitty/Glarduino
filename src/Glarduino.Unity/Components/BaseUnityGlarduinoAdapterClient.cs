@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Glarduino
@@ -19,7 +21,7 @@ namespace Glarduino
 
 		protected string PortName => portName;
 
-		protected abstract IDisposable CurrentClient { get; }
+		protected IDisposable CurrentClient { get; private set; }
 
 		void OnDisable()
 		{
@@ -34,6 +36,25 @@ namespace Glarduino
 		{
 			//When disabled we should just dispose.
 			CurrentClient?.Dispose();
+		}
+
+		protected async Task StartClient<TMessageType>([NotNull] BaseGlarduinoClient<TMessageType> client)
+		{
+			CurrentClient = client ?? throw new ArgumentNullException(nameof(client));
+
+			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {PortName} connected.");
+			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
+			client.OnExceptionEncountered += (sender, exception) => Debug.LogError($"Exception from Glardiuno Listener: {exception}");
+
+			await Task.Factory.StartNew(async () =>
+			{
+				await client.ConnectAsync()
+					.ConfigureAwait(false);
+
+				await client.StartListeningAsync()
+					.ConfigureAwait(false);
+
+			}, TaskCreationOptions.LongRunning);
 		}
 	}
 }

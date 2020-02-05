@@ -8,22 +8,11 @@ namespace Glarduino
 {
 	public sealed class DebugLogUnityGlarduinoClient : BaseUnityGlarduinoAdapterClient
 	{
-		private IDisposable _currentClient { get; set; }
-
-		protected override IDisposable CurrentClient => _currentClient;
-
 		private async Task Start()
 		{
 			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new StringMessageDeserializerStrategy(), new DebugLogStringMessageDispatchingStrategy());
 
-			_currentClient = client;
-			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {PortName} connected.");
-			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
-
-			await client.ConnectAsync()
-				.ConfigureAwait(false);
-
-			await client.StartListeningAsync()
+			await StartClient(client)
 				.ConfigureAwait(false);
 		}
 	}

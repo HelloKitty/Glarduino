@@ -8,10 +8,6 @@ namespace Glarduino
 {
 	public sealed class ArdityGlarduinoAdapterClient : BaseUnityGlarduinoAdapterClient
 	{
-		private IDisposable _currentClient { get; set; }
-
-		protected override IDisposable CurrentClient => _currentClient;
-
 		[SerializeField]
 		private MonoBehaviour Listener;
 
@@ -28,19 +24,8 @@ namespace Glarduino
 
 			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new StringMessageDeserializerStrategy(), dispatcher);
 
-			_currentClient = client;
-			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {PortName} connected.");
-			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
-
-			await Task.Factory.StartNew(async () =>
-			{
-				await client.ConnectAsync()
-					.ConfigureAwait(false);
-
-				await client.StartListeningAsync()
-					.ConfigureAwait(false);
-
-			}, TaskCreationOptions.LongRunning);
+			await StartClient(client)
+				.ConfigureAwait(false);
 		}
 	}
 }
