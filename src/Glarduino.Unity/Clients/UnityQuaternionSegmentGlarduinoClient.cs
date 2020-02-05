@@ -5,21 +5,21 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public sealed class UnityQuaternionGlarduinoClient : BaseGlarduinoClient<ArraySegment<Quaternion>>
+	public sealed class UnityQuaternionSegmentGlarduinoClient : BaseGlarduinoClient<RecyclableArraySegment<Quaternion>>
 	{
 		private bool unityDisposed = false;
 
-		public UnityQuaternionGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
-			IMessageDeserializerStrategy<ArraySegment<Quaternion>> messageDeserializer, 
-			IMessageDispatchingStrategy<ArraySegment<Quaternion>> messageDispatcher) 
+		public UnityQuaternionSegmentGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
+			IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>> messageDeserializer, 
+			IMessageDispatchingStrategy<RecyclableArraySegment<Quaternion>> messageDispatcher) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher)
 		{
 
 		}
 
-		public UnityQuaternionGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
-			IMessageDeserializerStrategy<ArraySegment<Quaternion>> messageDeserializer, 
-			IMessageDispatchingStrategy<ArraySegment<Quaternion>> messageDispatcher, 
+		public UnityQuaternionSegmentGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
+			IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>> messageDeserializer, 
+			IMessageDispatchingStrategy<RecyclableArraySegment<Quaternion>> messageDispatcher, 
 			ICommunicationPort comPort) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher, comPort)
 		{
