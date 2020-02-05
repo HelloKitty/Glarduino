@@ -62,7 +62,7 @@ namespace Glarduino
 		/// Reads a <see cref="float"/> value from the <see cref="SingleQuatBuffer"/>.
 		/// </summary>
 		/// <param name="index">The index to read.</param>
-		/// <returns>A float value at the specified <see cref="index"/>.</returns>
+		/// <returns>A float value at the specified <paramref name="index"/>.</returns>
 		private float GetFloatFromQuatBuffer(int index)
 		{
 			return Unsafe.ReadUnaligned<float>(ref SingleQuatBuffer[sizeof(float) * index]);

@@ -35,8 +35,10 @@ namespace Glarduino
 		}
 
 		//Override to only indicate being connected if the application is in playmode too.
+		/// <inheritdoc />
 		public override bool isConnected => base.isConnected && !unityDisposed;
 
+		/// <inheritdoc />
 		public override void Dispose()
 		{
 			unityDisposed = true;

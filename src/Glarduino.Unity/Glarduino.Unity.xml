@@ -21,6 +21,12 @@
         <member name="M:Glarduino.BaseUnityGlardunioClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0},Glarduino.ICommunicationPort)">
             <inheritdoc />
         </member>
+        <member name="P:Glarduino.BaseUnityGlardunioClient`1.isConnected">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.BaseUnityGlardunioClient`1.Dispose">
+            <inheritdoc />
+        </member>
         <member name="T:Glarduino.UnityIntGlarduinoClient">
             <summary>
             Simplified generic type <see cref="T:System.Int32"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
@@ -171,7 +177,7 @@
             Reads a <see cref="T:System.Single"/> value from the <see cref="P:Glarduino.QuaternionSegmentMessageDeserializerStrategy.SingleQuatBuffer"/>.
             </summary>
             <param name="index">The index to read.</param>
-            <returns>A float value at the specified <see cref="!:index"/>.</returns>
+            <returns>A float value at the specified <paramref name="index"/>.</returns>
         </member>
         <member name="T:Glarduino.IQuaternionSegmentMessageListener">
             <summary>

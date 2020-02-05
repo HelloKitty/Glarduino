@@ -15,7 +15,9 @@ namespace Glarduino
 		/// The message listener.
 		/// </summary>
 		[SerializeField]
+#pragma warning disable 649
 		private MonoBehaviour Listener;
+#pragma warning restore 649
 
 		void Awake()
 		{

@@ -16,7 +16,9 @@ namespace Glarduino
 		/// Must implement <see cref="RecyclableArraySegment{T}"/> for <see cref="Quaternion"/> <see cref="IMessageListener{TMessageType}"/>.
 		/// </summary>
 		[SerializeField]
+#pragma warning disable 649
 		private MonoBehaviour Listener;
+#pragma warning restore 649
 
 		/// <summary>
 		/// Hack/Debug hardcoded <see cref="Quaternion"/> amount that's coming in through the serial ports.
