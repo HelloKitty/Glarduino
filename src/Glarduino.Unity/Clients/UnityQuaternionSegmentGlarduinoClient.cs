@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Glarduino
 {
 	/// <summary>
-	/// Simplified generic type <see cref="RecyclableArraySegment{T}"/>-based implementation of <see cref="BaseUnityGlardunioClient{TMessageType}"/>
+	/// Simplified generic type <see cref="RecyclableArraySegment{T}"/>-based implementation of <see cref="BaseUnityGlarduinoClient{TMessageType}"/>
 	/// </summary>
 	public sealed class UnityQuaternionSegmentGlarduinoClient : BaseGlarduinoClient<RecyclableArraySegment<Quaternion>>
 	{

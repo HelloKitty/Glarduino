@@ -8,7 +8,7 @@ namespace Glarduino
 	/// Base type for Unity3D-based <see cref="BaseGlarduinoClient{TMessageType}"/> implementations.
 	/// </summary>
 	/// <typeparam name="TMessageType"></typeparam>
-	public abstract class BaseUnityGlardunioClient<TMessageType> : BaseGlarduinoClient<TMessageType>
+	public abstract class BaseUnityGlarduinoClient<TMessageType> : BaseGlarduinoClient<TMessageType>
 	{
 		/// <summary>
 		/// Indicates if the client has been disposed.
@@ -16,7 +16,7 @@ namespace Glarduino
 		private bool unityDisposed = false;
 
 		/// <inheritdoc />
-		protected BaseUnityGlardunioClient(ArduinoPortConnectionInfo connectionInfo, 
+		protected BaseUnityGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher)
@@ -25,7 +25,7 @@ namespace Glarduino
 		}
 
 		/// <inheritdoc />
-		protected BaseUnityGlardunioClient(ArduinoPortConnectionInfo connectionInfo, 
+		protected BaseUnityGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher, 
 			ICommunicationPort comPort) 

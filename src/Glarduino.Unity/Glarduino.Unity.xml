@@ -4,32 +4,32 @@
         <name>Glarduino.Unity</name>
     </assembly>
     <members>
-        <member name="T:Glarduino.BaseUnityGlardunioClient`1">
+        <member name="T:Glarduino.BaseUnityGlarduinoClient`1">
             <summary>
             Base type for Unity3D-based <see cref="T:Glarduino.BaseGlarduinoClient`1"/> implementations.
             </summary>
             <typeparam name="TMessageType"></typeparam>
         </member>
-        <member name="F:Glarduino.BaseUnityGlardunioClient`1.unityDisposed">
+        <member name="F:Glarduino.BaseUnityGlarduinoClient`1.unityDisposed">
             <summary>
             Indicates if the client has been disposed.
             </summary>
         </member>
-        <member name="M:Glarduino.BaseUnityGlardunioClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0})">
+        <member name="M:Glarduino.BaseUnityGlarduinoClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0})">
             <inheritdoc />
         </member>
-        <member name="M:Glarduino.BaseUnityGlardunioClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0},Glarduino.ICommunicationPort)">
+        <member name="M:Glarduino.BaseUnityGlarduinoClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0},Glarduino.ICommunicationPort)">
             <inheritdoc />
         </member>
-        <member name="P:Glarduino.BaseUnityGlardunioClient`1.isConnected">
+        <member name="P:Glarduino.BaseUnityGlarduinoClient`1.isConnected">
             <inheritdoc />
         </member>
-        <member name="M:Glarduino.BaseUnityGlardunioClient`1.Dispose">
+        <member name="M:Glarduino.BaseUnityGlarduinoClient`1.Dispose">
             <inheritdoc />
         </member>
         <member name="T:Glarduino.UnityIntGlarduinoClient">
             <summary>
-            Simplified generic type <see cref="T:System.Int32"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            Simplified generic type <see cref="T:System.Int32"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlarduinoClient`1"/>
             </summary>
         </member>
         <member name="M:Glarduino.UnityIntGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.Int32},Glarduino.IMessageDispatchingStrategy{System.Int32})">
@@ -37,7 +37,7 @@
         </member>
         <member name="T:Glarduino.UnityQuaternionSegmentGlarduinoClient">
             <summary>
-            Simplified generic type <see cref="T:System.RecyclableArraySegment`1"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            Simplified generic type <see cref="T:System.RecyclableArraySegment`1"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlarduinoClient`1"/>
             </summary>
         </member>
         <member name="M:Glarduino.UnityQuaternionSegmentGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}},Glarduino.IMessageDispatchingStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}})">
@@ -48,7 +48,7 @@
         </member>
         <member name="T:Glarduino.UnityStringGlarduinoClient">
             <summary>
-            Simplified generic type <see cref="T:System.String"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            Simplified generic type <see cref="T:System.String"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlarduinoClient`1"/>
             </summary>
         </member>
         <member name="M:Glarduino.UnityStringGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.String},Glarduino.IMessageDispatchingStrategy{System.String})">
