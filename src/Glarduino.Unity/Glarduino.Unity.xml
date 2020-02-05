@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Glarduino.Unity</name>
+    </assembly>
+    <members>
+        <member name="M:Glarduino.BaseUnityGlarduinoAdapterClient.OnApplicationQuit">
+            <summary>
+            See: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Glarduino.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Glarduino.BaseGlarduinoClient`1">
+            <summary>
+            Base type for any Glarduino Arduino connected client.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.InternallyManagedPort">
+            <summary>
+            The internally managed <see cref="T:System.IO.Ports.SerialPort"/> that represents
+            the potentially connected port to the Aurdino device.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.ConnectionInfo">
+            <summary>
+            The connection info used for the <see cref="P:Glarduino.BaseGlarduinoClient`1.InternallyManagedPort"/>.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.isConnected">
+            <summary>
+            Indicates if the client is connected.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.ConnectionEvents">
+            <summary>
+            Container for subscribable connection events for the client.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.MessageDeserializer">
+            <summary>
+            Strategy for deserializing messages from the serial port.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseGlarduinoClient`1.MessageDispatcher">
+            <summary>
+            Strategy for dispatching messages.
+            </summary>
+        </member>
+        <member name="E:Glarduino.BaseGlarduinoClient`1.OnExceptionEncountered">
+            <summary>
+            Publisher for exceptions encountered
+            </summary>
+        </member>
+        <member name="T:Glarduino.IClientConnectable">
+            <summary>
+            Contract for types that are client connectable.
+            </summary>
+        </member>
+        <member name="M:Glarduino.IClientConnectable.ConnectAsync">
+            <summary>
+            Opens the underlying Arduino port.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Glarduino.IClientListenable">
+            <summary>
+            Contract for types that are client listenable
+            </summary>
+        </member>
+        <member name="M:Glarduino.IClientListenable.StartListeningAsync">
+            <summary>
+            Starts the client listening.
+            </summary>
+            <returns>Awaitable that completes when the client finishes listening.</returns>
+        </member>
+        <member name="T:Glarduino.ArduinoPortConnectionInfo">
+            <summary>
+            Port connection information for the Arduino connection.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ArduinoPortConnectionInfo.PortName">
+            <summary>
+            Port name with which the SerialPort object will be created.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ArduinoPortConnectionInfo.BaudRate">
+            <summary>
+            Baud rate that the serial device is using to transmit data.
+            This is bits per second.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ArduinoPortConnectionInfo.ReadTimeout">
+            <summary>
+            Amount of milliseconds alotted to a single read or connect. An
+            exception is thrown when such operations take more than this time
+            to complete.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ArduinoPortConnectionInfo.WriteTimeout">
+            <summary>
+            Amount of milliseconds alloted to a single write. An exception is thrown
+            when such operations take more than this time to complete.
+            </summary>
+        </member>
+        <member name="T:Glarduino.IConnectionEventsSubscribable">
+            <summary>
+            Contract for types that can publish connection events.
+            </summary>
+        </member>
+        <member name="E:Glarduino.IConnectionEventsSubscribable.OnClientConnected">
+            <summary>
+            Event for client connection.
+            </summary>
+        </member>
+        <member name="E:Glarduino.IConnectionEventsSubscribable.OnClientDisconnected">
+            <summary>
+            Event for client disconnection.
+            </summary>
+        </member>
+        <member name="F:Glarduino.SerialPortExtensions.DefaultNewLine">
+            <summary>
+            From https://github.com/dotnet/runtime/blob/4f9ae42d861fcb4be2fcd5d3d55d5f227d30e723/src/libraries/System.IO.Ports/src/System/IO/Ports/SerialPort.cs#L36
+            </summary>
+        </member>
+        <member name="M:Glarduino.SerialPortExtensions.ReadAsync(Glarduino.ICommunicationPort,System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Reads a chunk into the provided <paramref name="buffer"/> from the provided <see cref="T:System.IO.Ports.SerialPort"/>.
+            </summary>
+            <param name="serialPort">The port to read from.</param>
+            <param name="buffer">The buffer to read into.</param>
+            <param name="offset">The offset into the buffer.</param>
+            <param name="count">The count of bytes to read.</param>
+            <param name="cancellationToken">Optional cancellation token for the read operation.</param>
+            <returns>Awaitable for when the operation is completed.</returns>
+        </member>
+        <member name="M:Glarduino.SerialPortExtensions.ReadLineAsync(Glarduino.ICommunicationPort)">
+            <summary>
+            Read a line from the SerialPort asynchronously
+            </summary>
+            <param name="serialPort">The port to read data from</param>
+            <returns>A line read from the input</returns>
+        </member>
+        <member name="T:Glarduino.IMessageDeserializerStrategy`1">
+            <summary>
+            Contract for types that handle reading from a serial port and deserializing a higher level
+            message of a specific type to the stream.
+            </summary>
+            <typeparam name="TMessageType"></typeparam>
+        </member>
+        <member name="M:Glarduino.IMessageDeserializerStrategy`1.ReadMessageAsync(Glarduino.ICommunicationPort,System.Threading.CancellationToken)">
+            <summary>
+            Reads and deserializers the message of type <typeparamref name="TMessageType"/> from the provided port <paramref name="serialPort"/>.
+            </summary>
+            <param name="serialPort">The serial port to read from.</param>
+            <param name="cancellationToken">Optional cancel token.</param>
+            <returns>The deserialized message.</returns>
+        </member>
+        <member name="T:Glarduino.IMessageDispatchingStrategy`1">
+            <summary>
+            Contract for types that implement message dispatching.
+            </summary>
+            <typeparam name="TMessageType">The message type.</typeparam>
+        </member>
+        <member name="M:Glarduino.IMessageDispatchingStrategy`1.DispatchMessageAsync(`0)">
+            <summary>
+            Dispatches the provided <see cref="!:message"/> with the implemented
+            strategy.
+            </summary>
+            <param name="message">The message object.</param>
+            <returns>Awaitable for when the dispatching process has completed.</returns>
+        </member>
+        <member name="T:Glarduino.IMessageListener`1">
+            <summary>
+            Conctract for types that can consume or listen for
+            messages produced by the Glardiuno client.
+            </summary>
+            <typeparam name="TMessageType">The type of the message.</typeparam>
+        </member>
+        <member name="M:Glarduino.IMessageListener`1.OnMessage(`0)">
+            <summary>
+            Called when a message is recieved or processed.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+    </members>
+</doc>

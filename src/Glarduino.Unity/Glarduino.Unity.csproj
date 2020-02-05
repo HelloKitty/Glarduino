@@ -2,6 +2,27 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Authors>Andrew Blakely, HelloKitty</Authors>
+    <Company>Andrew Blakely, HelloKitty</Company>
+    <Product>Glarduino</Product>
+    <Description>Glarduino is a asynchronous communication library for.NET/C# Serial Ports such as Arduino. This implementation supports Unity3D integration.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/HelloKitty/Glarduino</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HelloKitty/Glarduino</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Arduino async SerialPorts Serial Ports Unity Unity3D Glarduino</PackageTags>
+    <NeutralLanguage></NeutralLanguage>
+    <Copyright>Andrew Blakely</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>C:\Users\Glader\Documents\Github\Glarduino\src\Glarduino.Unity\Glarduino.Unity.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>C:\Users\Glader\Documents\Github\Glarduino\src\Glarduino.Unity\Glarduino.Unity.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
