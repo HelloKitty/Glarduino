@@ -4,10 +4,213 @@
         <name>Glarduino.Unity</name>
     </assembly>
     <members>
+        <member name="T:Glarduino.BaseUnityGlardunioClient`1">
+            <summary>
+            Base type for Unity3D-based <see cref="T:Glarduino.BaseGlarduinoClient`1"/> implementations.
+            </summary>
+            <typeparam name="TMessageType"></typeparam>
+        </member>
+        <member name="F:Glarduino.BaseUnityGlardunioClient`1.unityDisposed">
+            <summary>
+            Indicates if the client has been disposed.
+            </summary>
+        </member>
+        <member name="M:Glarduino.BaseUnityGlardunioClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0})">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.BaseUnityGlardunioClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0},Glarduino.ICommunicationPort)">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.UnityIntGlarduinoClient">
+            <summary>
+            Simplified generic type <see cref="T:System.Int32"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            </summary>
+        </member>
+        <member name="M:Glarduino.UnityIntGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.Int32},Glarduino.IMessageDispatchingStrategy{System.Int32})">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.UnityQuaternionSegmentGlarduinoClient">
+            <summary>
+            Simplified generic type <see cref="T:System.RecyclableArraySegment`1"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            </summary>
+        </member>
+        <member name="M:Glarduino.UnityQuaternionSegmentGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}},Glarduino.IMessageDispatchingStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}})">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.UnityQuaternionSegmentGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}},Glarduino.IMessageDispatchingStrategy{System.RecyclableArraySegment{UnityEngine.Quaternion}},Glarduino.ICommunicationPort)">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.UnityStringGlarduinoClient">
+            <summary>
+            Simplified generic type <see cref="T:System.String"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlardunioClient`1"/>
+            </summary>
+        </member>
+        <member name="M:Glarduino.UnityStringGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.String},Glarduino.IMessageDispatchingStrategy{System.String})">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.ArdityGlarduinoAdapterClient">
+            <summary>
+            Ardity compatibility adapter for string-based message reading and dispatching.
+            </summary>
+        </member>
+        <member name="F:Glarduino.ArdityGlarduinoAdapterClient.Listener">
+            <summary>
+            The message listener.
+            </summary>
+        </member>
+        <member name="M:Glarduino.ArdityGlarduinoAdapterClient.Start">
+            <summary>
+            Unity3D awaitable <see cref="M:Glarduino.ArdityGlarduinoAdapterClient.Start"/> method that starts the client.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Glarduino.BaseUnityGlarduinoAdapterClient">
+            <summary>
+            Base Unity3D client adapter for editor component access to the Glarduino library.
+            </summary>
+        </member>
+        <member name="F:Glarduino.BaseUnityGlarduinoAdapterClient.portName">
+            <summary>
+            The string name of the communication port.
+            </summary>
+        </member>
+        <member name="F:Glarduino.BaseUnityGlarduinoAdapterClient.baudRate">
+            <summary>
+            The bitrate of data transfer for the communication.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseUnityGlarduinoAdapterClient.BaudRate">
+            <summary>
+            See: <see cref="F:Glarduino.BaseUnityGlarduinoAdapterClient.baudRate"/>.
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseUnityGlarduinoAdapterClient.PortName">
+            <summary>
+            See: <see cref="F:Glarduino.BaseUnityGlarduinoAdapterClient.baudRate"/>
+            </summary>
+        </member>
+        <member name="P:Glarduino.BaseUnityGlarduinoAdapterClient.CurrentClient">
+            <summary>
+            The current disposable client.
+            </summary>
+        </member>
+        <member name="M:Glarduino.BaseUnityGlarduinoAdapterClient.OnDisable">
+            <summary>
+            Called when the component is disable in Unity3D.
+            </summary>
+        </member>
         <member name="M:Glarduino.BaseUnityGlarduinoAdapterClient.OnApplicationQuit">
             <summary>
             See: https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnApplicationQuit.html
             </summary>
+        </member>
+        <member name="M:Glarduino.BaseUnityGlarduinoAdapterClient.StartClient``1(Glarduino.BaseGlarduinoClient{``0})">
+            <summary>
+            Implementer should call this method to start the client.
+            </summary>
+            <typeparam name="TMessageType">The client message handling type.</typeparam>
+            <param name="client">The client instance.</param>
+            <returns>Awaitable for client start.</returns>
+        </member>
+        <member name="T:Glarduino.QuaternionGlarduinoClient">
+            <summary>
+            <see cref="T:UnityEngine.Quaternion"/> <see cref="T:System.RecyclableArraySegment`1"/>-based implementation of <see cref="T:Glarduino.BaseUnityGlarduinoAdapterClient"/>.
+            </summary>
+        </member>
+        <member name="F:Glarduino.QuaternionGlarduinoClient.Listener">
+            <summary>
+            The message listener.
+            Must implement <see cref="T:System.RecyclableArraySegment`1"/> for <see cref="T:UnityEngine.Quaternion"/> <see cref="T:Glarduino.IMessageListener`1"/>.
+            </summary>
+        </member>
+        <member name="F:Glarduino.QuaternionGlarduinoClient.ExpectedQuaternionCount">
+            <summary>
+            Hack/Debug hardcoded <see cref="T:UnityEngine.Quaternion"/> amount that's coming in through the serial ports.
+            </summary>
+        </member>
+        <member name="M:Glarduino.QuaternionGlarduinoClient.Awake">
+            <summary>
+            Called by Unity3D at component awake.
+            </summary>
+        </member>
+        <member name="M:Glarduino.QuaternionGlarduinoClient.Start">
+            <summary>
+            Called by Unity3D at component. start.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Glarduino.QuaternionSegmentMessageDeserializerStrategy">
+            <summary>
+            <see cref="T:UnityEngine.Quaternion"/> <see cref="T:System.RecyclableArraySegment`1"/> implementation of <see cref="T:Glarduino.IMessageDeserializerStrategy`1"/>.
+            Reading incoming <see cref="T:UnityEngine.Quaternion"/> chunks as 4 4-byte float data chunks with a leading 1 byte <see cref="T:UnityEngine.Quaternion"/> array length.
+            </summary>
+        </member>
+        <member name="P:Glarduino.QuaternionSegmentMessageDeserializerStrategy.SingleByteBuffer">
+            <summary>
+            Reusable single byte buffer.
+            </summary>
+        </member>
+        <member name="P:Glarduino.QuaternionSegmentMessageDeserializerStrategy.SingleQuatBuffer">
+            <summary>
+            Reusuable <see cref="T:UnityEngine.Quaternion"/> byte buffer.
+            </summary>
+        </member>
+        <member name="M:Glarduino.QuaternionSegmentMessageDeserializerStrategy.ReadMessageAsync(Glarduino.ICommunicationPort,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.QuaternionSegmentMessageDeserializerStrategy.GetQuaternionCountAsync(Glarduino.ICommunicationPort,System.Threading.CancellationToken)">
+            <summary>
+            Gets the size of the incoming <see cref="T:UnityEngine.Quaternion"/> array.
+            </summary>
+            <param name="serialPort">The communication port.</param>
+            <param name="cancellationToken">Optional cancel token.</param>
+            <returns>Awaitable byte future.</returns>
+        </member>
+        <member name="M:Glarduino.QuaternionSegmentMessageDeserializerStrategy.GetFloatFromQuatBuffer(System.Int32)">
+            <summary>
+            Reads a <see cref="T:System.Single"/> value from the <see cref="P:Glarduino.QuaternionSegmentMessageDeserializerStrategy.SingleQuatBuffer"/>.
+            </summary>
+            <param name="index">The index to read.</param>
+            <returns>A float value at the specified <see cref="!:index"/>.</returns>
+        </member>
+        <member name="T:Glarduino.IQuaternionSegmentMessageListener">
+            <summary>
+            Simplified type interface for <see cref="T:UnityEngine.Quaternion"/> <see cref="T:System.RecyclableArraySegment`1"/> <see cref="T:Glarduino.IMessageListener`1"/> implementation.
+            </summary>
+        </member>
+        <member name="T:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1">
+            <summary>
+            Unity3D main-threaded/<see cref="M:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.Update"/>-based generic <see cref="T:Glarduino.IMessageDispatchingStrategy`1"/> implementation.
+            </summary>
+            <typeparam name="TMessageType"></typeparam>
+        </member>
+        <member name="F:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.SyncObj">
+            <summary>
+            Syncronization object.
+            </summary>
+        </member>
+        <member name="P:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.LatestMessage">
+            <summary>
+            The last message handled.
+            </summary>
+        </member>
+        <member name="P:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.Listener">
+            <summary>
+            The listener for the incoming messages.
+            </summary>
+        </member>
+        <member name="P:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.isNewMessageAvailable">
+            <summary>
+            Mutable <see cref="T:System.Boolean"/> indicating if a new message has been sent between the last frame.
+            </summary>
+        </member>
+        <member name="M:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.Update">
+            <summary>
+            Unity3D called update tick.
+            </summary>
+        </member>
+        <member name="M:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.DispatchMessageAsync(`0)">
+            <inheritdoc />
         </member>
     </members>
 </doc>

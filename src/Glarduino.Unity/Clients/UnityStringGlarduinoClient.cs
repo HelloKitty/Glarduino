@@ -5,25 +5,18 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public sealed class UnityStringGlarduinoClient : BaseStringGlarduinoClient
+	/// <summary>
+	/// Simplified generic type <see cref="string"/>-based implementation of <see cref="BaseUnityGlardunioClient{TMessageType}"/>
+	/// </summary>
+	public sealed class UnityStringGlarduinoClient : BaseUnityGlardunioClient<string>
 	{
-		private bool unityDisposed = false;
-
+		/// <inheritdoc />
 		public UnityStringGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<string> messageDeserializer, 
 			IMessageDispatchingStrategy<string> messageDispatcher) 
 			: base(connectionInfo, messageDeserializer, messageDispatcher)
 		{
 
-		}
-
-		//Override to only indicate being connected if the application is in playmode too.
-		public override bool isConnected => base.isConnected && !unityDisposed;
-
-		public override void Dispose()
-		{
-			unityDisposed = true;
-			base.Dispose();
 		}
 	}
 }

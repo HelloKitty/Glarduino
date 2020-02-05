@@ -6,20 +6,37 @@ using UnityEngine;
 
 namespace Glarduino
 {
+	/// <summary>
+	/// <see cref="Quaternion"/> <see cref="RecyclableArraySegment{T}"/>-based implementation of <see cref="BaseUnityGlarduinoAdapterClient"/>.
+	/// </summary>
 	public sealed class QuaternionGlarduinoClient : BaseUnityGlarduinoAdapterClient
 	{
+		/// <summary>
+		/// The message listener.
+		/// Must implement <see cref="RecyclableArraySegment{T}"/> for <see cref="Quaternion"/> <see cref="IMessageListener{TMessageType}"/>.
+		/// </summary>
 		[SerializeField]
 		private MonoBehaviour Listener;
 
+		/// <summary>
+		/// Hack/Debug hardcoded <see cref="Quaternion"/> amount that's coming in through the serial ports.
+		/// </summary>
 		[SerializeField]
 		private int ExpectedQuaternionCount = 0;
 
+		/// <summary>
+		/// Called by Unity3D at component awake.
+		/// </summary>
 		void Awake()
 		{
 			if(!Listener is IMessageListener<RecyclableArraySegment<Quaternion>>)
 				throw new InvalidOperationException($"Provided Component: {Listener} On GameObject: {Listener.gameObject.name} does not implement {nameof(IMessageListener<RecyclableArraySegment<Quaternion>>)}");
 		}
 
+		/// <summary>
+		/// Called by Unity3D at component. start.
+		/// </summary>
+		/// <returns></returns>
 		public async Task Start()
 		{
 			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<RecyclableArraySegment<Quaternion>>>();

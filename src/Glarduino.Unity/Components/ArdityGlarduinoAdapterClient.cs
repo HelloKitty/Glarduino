@@ -6,8 +6,14 @@ using UnityEngine;
 
 namespace Glarduino
 {
+	/// <summary>
+	/// Ardity compatibility adapter for string-based message reading and dispatching.
+	/// </summary>
 	public sealed class ArdityGlarduinoAdapterClient : BaseUnityGlarduinoAdapterClient
 	{
+		/// <summary>
+		/// The message listener.
+		/// </summary>
 		[SerializeField]
 		private MonoBehaviour Listener;
 
@@ -17,6 +23,10 @@ namespace Glarduino
 				throw new InvalidOperationException($"Provided Component: {Listener} On GameObject: {Listener.gameObject.name} does not implement {nameof(IMessageListener<string>)}");
 		}
 
+		/// <summary>
+		/// Unity3D awaitable <see cref="Start"/> method that starts the client.
+		/// </summary>
+		/// <returns></returns>
 		private async Task Start()
 		{
 			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<string>>();

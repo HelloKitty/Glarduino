@@ -5,10 +5,12 @@ using UnityEngine;
 
 namespace Glarduino
 {
+	/// <summary>
+	/// Simplified generic type <see cref="RecyclableArraySegment{T}"/>-based implementation of <see cref="BaseUnityGlardunioClient{TMessageType}"/>
+	/// </summary>
 	public sealed class UnityQuaternionSegmentGlarduinoClient : BaseGlarduinoClient<RecyclableArraySegment<Quaternion>>
 	{
-		private bool unityDisposed = false;
-
+		/// <inheritdoc />
 		public UnityQuaternionSegmentGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>> messageDeserializer, 
 			IMessageDispatchingStrategy<RecyclableArraySegment<Quaternion>> messageDispatcher) 
@@ -17,6 +19,7 @@ namespace Glarduino
 
 		}
 
+		/// <inheritdoc />
 		public UnityQuaternionSegmentGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>> messageDeserializer, 
 			IMessageDispatchingStrategy<RecyclableArraySegment<Quaternion>> messageDispatcher, 
@@ -24,15 +27,6 @@ namespace Glarduino
 			: base(connectionInfo, messageDeserializer, messageDispatcher, comPort)
 		{
 
-		}
-
-		//Override to only indicate being connected if the application is in playmode too.
-		public override bool isConnected => base.isConnected && !unityDisposed;
-
-		public override void Dispose()
-		{
-			unityDisposed = true;
-			base.Dispose();
 		}
 	}
 }

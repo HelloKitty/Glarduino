@@ -4,6 +4,90 @@
         <name>Glarduino.Core</name>
     </assembly>
     <members>
+        <member name="T:Glarduino.ICommunicationPort">
+            <summary>
+            Contract for types that provide access to a stream-based communication port.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ICommunicationPort.IsOpen">
+            <summary>
+            Indicates if the port is open.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ICommunicationPort.ReadTimeout">
+            <summary>
+            Mutable read timeout in milliseconds.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ICommunicationPort.WriteTimeout">
+            <summary>
+            Mutable write timeout in milliseconds.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ICommunicationPort.Encoding">
+            <summary>
+            The default string encoding.
+            </summary>
+        </member>
+        <member name="P:Glarduino.ICommunicationPort.BaseStream">
+            <summary>
+            The communication stream.
+            </summary>
+        </member>
+        <member name="M:Glarduino.ICommunicationPort.Open">
+            <summary>
+            Synchronously opens the communication port.
+            </summary>
+        </member>
+        <member name="M:Glarduino.ICommunicationPort.Close">
+            <summary>
+            Synchronously closes the communication port.
+            </summary>
+        </member>
+        <member name="T:Glarduino.SerialPortCommunicationPortAdapter">
+            <summary>
+            The <see cref="T:System.IO.Ports.SerialPort"/> based implementation of the <see cref="T:Glarduino.ICommunicationPort"/>
+            interface.
+            </summary>
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.InternalSerialPort">
+            <summary>
+            The <see cref="T:System.IO.Ports.SerialPort"/> used to implement the <see cref="T:Glarduino.ICommunicationPort"/> interface.
+            </summary>
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.IsOpen">
+            <inheritdoc />
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.ReadTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.WriteTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.Encoding">
+            <inheritdoc />
+        </member>
+        <member name="P:Glarduino.SerialPortCommunicationPortAdapter.BaseStream">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.#ctor(System.IO.Ports.SerialPort)">
+            <summary>
+            Creates a new <see cref="T:Glarduino.SerialPortCommunicationPortAdapter"/> with the provided <see cref="T:System.IO.Ports.SerialPort"/> <paramref name="internalSerialPort"/>
+            as the port to be used.
+            </summary>
+            <param name="internalSerialPort">Specified port.</param>
+        </member>
+        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Dispose">
+            <summary>
+            Disposes the adapter which disposes of <see cref="P:Glarduino.SerialPortCommunicationPortAdapter.InternalSerialPort"/>.
+            </summary>
+        </member>
+        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Open">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Close">
+            <inheritdoc />
+        </member>
         <member name="T:Glarduino.BaseGlarduinoClient`1">
             <summary>
             Base type for any Glarduino Arduino connected client.
@@ -44,6 +128,78 @@
             <summary>
             Publisher for exceptions encountered
             </summary>
+        </member>
+        <member name="M:Glarduino.BaseGlarduinoClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0})">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseGlarduinoClient`1"/>.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+        </member>
+        <member name="M:Glarduino.BaseGlarduinoClient`1.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{`0},Glarduino.IMessageDispatchingStrategy{`0},Glarduino.ICommunicationPort)">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseGlarduinoClient`1"/>.
+            Specifically defining the communication port.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+            <param name="comPort">The specified communication port.</param>
+        </member>
+        <member name="M:Glarduino.BaseGlarduinoClient`1.ConnectAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.BaseGlarduinoClient`1.StartListeningAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.BaseGlarduinoClient`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.BaseIntGlarduinoClient">
+            <summary>
+            base <see cref="T:System.Int32"/> implementation of <see cref="T:Glarduino.BaseGlarduinoClient`1"/>.
+            </summary>
+        </member>
+        <member name="M:Glarduino.BaseIntGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.Int32},Glarduino.IMessageDispatchingStrategy{System.Int32})">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseIntGlarduinoClient"/>.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+        </member>
+        <member name="M:Glarduino.BaseIntGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.Int32},Glarduino.IMessageDispatchingStrategy{System.Int32},Glarduino.ICommunicationPort)">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseIntGlarduinoClient"/>.
+            Specifically defining the communication port.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+            <param name="comPort">The specified communication port.</param>
+        </member>
+        <member name="T:Glarduino.BaseStringGlarduinoClient">
+            <summary>
+            base <see cref="T:System.String"/> implementation of <see cref="T:Glarduino.BaseGlarduinoClient`1"/>.
+            </summary>
+        </member>
+        <member name="M:Glarduino.BaseStringGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.String},Glarduino.IMessageDispatchingStrategy{System.String})">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseStringGlarduinoClient"/>.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+        </member>
+        <member name="M:Glarduino.BaseStringGlarduinoClient.#ctor(Glarduino.ArduinoPortConnectionInfo,Glarduino.IMessageDeserializerStrategy{System.String},Glarduino.IMessageDispatchingStrategy{System.String},Glarduino.ICommunicationPort)">
+            <summary>
+            Crates a new <see cref="T:Glarduino.BaseStringGlarduinoClient"/>.
+            </summary>
+            <param name="connectionInfo">The connection information for the port.</param>
+            <param name="messageDeserializer">The message deserialization strategy.</param>
+            <param name="messageDispatcher">The message dispatching strategy.</param>
+            <param name="comPort">The specified communication port.</param>
         </member>
         <member name="T:Glarduino.IClientConnectable">
             <summary>
@@ -94,6 +250,27 @@
             <summary>
             Amount of milliseconds alloted to a single write. An exception is thrown
             when such operations take more than this time to complete.
+            </summary>
+        </member>
+        <member name="T:Glarduino.ConnectionEvents">
+            <summary>
+            Default implementation of <see cref="T:Glarduino.IConnectionEventsSubscribable"/>.
+            </summary>
+        </member>
+        <member name="E:Glarduino.ConnectionEvents.OnClientConnected">
+            <inheritdoc />
+        </member>
+        <member name="E:Glarduino.ConnectionEvents.OnClientDisconnected">
+            <inheritdoc />
+        </member>
+        <member name="M:Glarduino.ConnectionEvents.InvokeClientConnected">
+            <summary>
+            Invokes the <see cref="E:Glarduino.ConnectionEvents.OnClientConnected"/> event.
+            </summary>
+        </member>
+        <member name="M:Glarduino.ConnectionEvents.InvokeClientDisconnected">
+            <summary>
+            Invokes the <see cref="E:Glarduino.ConnectionEvents.OnClientDisconnected"/> event.
             </summary>
         </member>
         <member name="T:Glarduino.IConnectionEventsSubscribable">
@@ -175,6 +352,29 @@
             Called when a message is recieved or processed.
             </summary>
             <param name="message">The message.</param>
+        </member>
+        <member name="T:Glarduino.IntMessageDeserializerStrategy">
+            <summary>
+            <see cref="T:System.Int32"/>-based implementation of <see cref="T:Glarduino.IMessageDeserializerStrategy`1"/>
+            that reads a 4 byte chunk and interprets it as an <see cref="T:System.Int32"/>.
+            </summary>
+        </member>
+        <member name="F:Glarduino.IntMessageDeserializerStrategy.IntBuffer">
+            <summary>
+            Rusable 4 byte byte buffer for temp storage of incoming int chunks.
+            </summary>
+        </member>
+        <member name="M:Glarduino.IntMessageDeserializerStrategy.ReadMessageAsync(Glarduino.ICommunicationPort,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Glarduino.StringMessageDeserializerStrategy">
+            <summary>
+            <see cref="T:System.String"/>-based implementation of <see cref="T:Glarduino.IMessageDeserializerStrategy`1"/>
+            that reads a <see cref="T:System.String"/> based on <see cref="T:Glarduino.ICommunicationPort"/> semantics.
+            </summary>
+        </member>
+        <member name="M:Glarduino.StringMessageDeserializerStrategy.ReadMessageAsync(Glarduino.ICommunicationPort,System.Threading.CancellationToken)">
+            <inheritdoc />
         </member>
     </members>
 </doc>
