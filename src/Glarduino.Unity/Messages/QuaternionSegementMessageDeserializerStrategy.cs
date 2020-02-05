@@ -13,7 +13,7 @@ namespace Glarduino
 	{
 		private byte[] SingleByteBuffer { get; } = new byte[1];
 
-		private byte[] SingleQuatBuffer { get; } = new byte[sizeof(int) * 4];
+		private byte[] SingleQuatBuffer { get; } = new byte[sizeof(float) * 4];
 
 		public async Task<RecyclableArraySegment<Quaternion>> ReadMessageAsync(ICommunicationPort serialPort, CancellationToken cancellationToken = default(CancellationToken))
 		{
@@ -25,7 +25,7 @@ namespace Glarduino
 
 			//Now we should read the quats based on the provided count
 			var quatArray = ArrayPool<Quaternion>.Shared.Rent(quaternionCount);
-			//RecyclableArraySegment<Quaternion>
+
 			for(int i = 0; i < quaternionCount; i++)
 			{
 				await serialPort.ReadAsync(SingleQuatBuffer, 0, SingleQuatBuffer.Length, cancellationToken);
@@ -37,7 +37,7 @@ namespace Glarduino
 
 		private float GetFloatFromQuatBuffer(int index)
 		{
-			return Unsafe.ReadUnaligned<float>(ref SingleQuatBuffer[sizeof(int) * index]);
+			return Unsafe.ReadUnaligned<float>(ref SingleQuatBuffer[sizeof(float) * index]);
 		}
 	}
 }
