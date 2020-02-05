@@ -44,6 +44,11 @@ namespace Glarduino
 		/// </summary>
 		private IMessageDispatchingStrategy<TMessageType> MessageDispatcher { get; }
 
+		/// <summary>
+		/// Publisher for exceptions encountered
+		/// </summary>
+		public event EventHandler<Exception> OnExceptionEncountered;
+
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher)
@@ -88,23 +93,33 @@ namespace Glarduino
 
 		public async Task StartListeningAsync()
 		{
-			if(!isConnected)
-				throw new InvalidOperationException($"Cannot start listening with {nameof(StartListeningAsync)} when internal {nameof(SerialPort)} {InternallyManagedPort} is not connected/open.");
-
-			while (isConnected)
+			try
 			{
-				//TODO: Handle cancellation tokens better.
-				TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort)
-					.ConfigureAwait(false);
+				if (!isConnected)
+					throw new InvalidOperationException($"Cannot start listening with {nameof(StartListeningAsync)} when internal {nameof(SerialPort)} {InternallyManagedPort} is not connected/open.");
 
-				//A message was recieved and deserialized as the strategy implemented.
-				//Therefore we should assume we have a valid message and then pass it to the message dispatching strategy.
-				await MessageDispatcher.DispatchMessageAsync(message)
-					.ConfigureAwait(false);
+				while (isConnected)
+				{
+					//TODO: Handle cancellation tokens better.
+					TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort)
+						.ConfigureAwait(false);
+
+					//A message was recieved and deserialized as the strategy implemented.
+					//Therefore we should assume we have a valid message and then pass it to the message dispatching strategy.
+					await MessageDispatcher.DispatchMessageAsync(message)
+						.ConfigureAwait(false);
+				}
 			}
-
-			//TODO: Should we assume disconnection just because listening stopped?
-			_ConnectionEvents.InvokeClientDisconnected();
+			catch (Exception e)
+			{
+				OnExceptionEncountered?.Invoke(this, e);
+				throw;
+			}
+			finally
+			{
+				//TODO: Should we assume disconnection just because listening stopped?
+				_ConnectionEvents.InvokeClientDisconnected();
+			}
 		}
 
 		public virtual void Dispose()

@@ -19,12 +19,17 @@ namespace Glarduino
 			_currentClient = client;
 			client.ConnectionEvents.OnClientConnected += (sender, args) => Debug.Log($"Port: {PortName} connected.");
 			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
+			client.OnExceptionEncountered += (sender, exception) => Debug.LogError($"Exception from Glardiuno Listener: {exception}");
 
-			await client.ConnectAsync()
-				.ConfigureAwait(false);
+			await Task.Factory.StartNew(async () =>
+			{
+				await client.ConnectAsync()
+					.ConfigureAwait(false);
 
-			await client.StartListeningAsync()
-				.ConfigureAwait(false);
+				await client.StartListeningAsync()
+					.ConfigureAwait(false);
+
+			}, TaskCreationOptions.LongRunning);
 		}
 	}
 }
