@@ -29,7 +29,7 @@ namespace Glarduino
 		/// </summary>
 		void Awake()
 		{
-			if(!Listener is IMessageListener<RecyclableArraySegment<Quaternion>>)
+			if(!(Listener is IMessageListener<RecyclableArraySegment<Quaternion>>))
 				throw new InvalidOperationException($"Provided Component: {Listener} On GameObject: {Listener.gameObject.name} does not implement {nameof(IMessageListener<RecyclableArraySegment<Quaternion>>)}");
 		}
 

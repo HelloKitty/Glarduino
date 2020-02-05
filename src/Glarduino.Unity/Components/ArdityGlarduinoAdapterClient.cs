@@ -19,7 +19,7 @@ namespace Glarduino
 
 		void Awake()
 		{
-			if(!Listener is IMessageListener<string>)
+			if(!(Listener is IMessageListener<string>))
 				throw new InvalidOperationException($"Provided Component: {Listener} On GameObject: {Listener.gameObject.name} does not implement {nameof(IMessageListener<string>)}");
 		}
 
