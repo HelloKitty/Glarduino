@@ -49,6 +49,12 @@ namespace Glarduino
 		/// </summary>
 		public event EventHandler<Exception> OnExceptionEncountered;
 
+		/// <summary>
+		/// Crates a new <see cref="BaseGlarduinoClient{TMessageType}"/>.
+		/// </summary>
+		/// <param name="connectionInfo">The connection information for the port.</param>
+		/// <param name="messageDeserializer">The message deserialization strategy.</param>
+		/// <param name="messageDispatcher">The message dispatching strategy.</param>
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher)
@@ -57,6 +63,14 @@ namespace Glarduino
 
 		}
 
+		/// <summary>
+		/// Crates a new <see cref="BaseGlarduinoClient{TMessageType}"/>.
+		/// Specifically defining the communication port.
+		/// </summary>
+		/// <param name="connectionInfo">The connection information for the port.</param>
+		/// <param name="messageDeserializer">The message deserialization strategy.</param>
+		/// <param name="messageDispatcher">The message dispatching strategy.</param>
+		/// <param name="comPort">The specified communication port.</param>
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo,
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer,
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher,
@@ -70,6 +84,7 @@ namespace Glarduino
 			_ConnectionEvents = new ConnectionEvents();
 		}
 
+		/// <inheritdoc />
 		public Task<bool> ConnectAsync()
 		{
 			InternallyManagedPort.ReadTimeout = ConnectionInfo.ReadTimeout;
@@ -91,6 +106,7 @@ namespace Glarduino
 			return Task.FromResult(InternallyManagedPort.IsOpen);
 		}
 
+		/// <inheritdoc />
 		public async Task StartListeningAsync()
 		{
 			try
@@ -122,6 +138,7 @@ namespace Glarduino
 			}
 		}
 
+		/// <inheritdoc />
 		public virtual void Dispose()
 		{
 			//We just dispose of the port.
