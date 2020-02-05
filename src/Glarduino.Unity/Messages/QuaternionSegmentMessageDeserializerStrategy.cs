@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public class QuaternionSegementMessageDeserializerStrategy : IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>>
+	public class QuaternionSegmentMessageDeserializerStrategy : IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>>
 	{
 		private byte[] SingleByteBuffer { get; } = new byte[1];
 

@@ -22,7 +22,7 @@ namespace Glarduino
 			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<RecyclableArraySegment<Quaternion>>>();
 			dispatcher.Listener = (IMessageListener<RecyclableArraySegment<Quaternion>>)Listener;
 
-			UnityQuaternionSegmentGlarduinoClient client = new UnityQuaternionSegmentGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new QuaternionSegementMessageDeserializerStrategy(), dispatcher);
+			UnityQuaternionSegmentGlarduinoClient client = new UnityQuaternionSegmentGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new QuaternionSegmentMessageDeserializerStrategy(), dispatcher);
 
 			await StartClient(client)
 				.ConfigureAwait(false);
