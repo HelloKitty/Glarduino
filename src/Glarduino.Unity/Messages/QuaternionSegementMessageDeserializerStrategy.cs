@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Glarduino
 {
-	public sealed class QuaternionSegementMessageDeserializerStrategy : IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>>
+	public class QuaternionSegementMessageDeserializerStrategy : IMessageDeserializerStrategy<RecyclableArraySegment<Quaternion>>
 	{
 		private byte[] SingleByteBuffer { get; } = new byte[1];
 
@@ -17,8 +17,7 @@ namespace Glarduino
 
 		public async Task<RecyclableArraySegment<Quaternion>> ReadMessageAsync(ICommunicationPort serialPort, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			await serialPort.ReadAsync(SingleByteBuffer, 0, 1, cancellationToken);
-			byte quaternionCount = SingleByteBuffer[0];
+			byte quaternionCount = await GetQuaternionCountAsync(serialPort, cancellationToken);
 
 			if (quaternionCount == 0)
 				return RecyclableArraySegment<Quaternion>.Empty;
@@ -33,6 +32,13 @@ namespace Glarduino
 			}
 
 			return new RecyclableArraySegment<Quaternion>(quatArray, 0, quaternionCount);
+		}
+
+		protected virtual async Task<byte> GetQuaternionCountAsync(ICommunicationPort serialPort, CancellationToken cancellationToken)
+		{
+			await serialPort.ReadAsync(SingleByteBuffer, 0, 1, cancellationToken);
+			byte quaternionCount = SingleByteBuffer[0];
+			return quaternionCount;
 		}
 
 		private float GetFloatFromQuatBuffer(int index)
