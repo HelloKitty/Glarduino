@@ -6,8 +6,8 @@
     <Authors>Andrew Blakely, HelloKitty</Authors>
     <Company>Andrew Blakely, HelloKitty</Company>
     <Product>Glarduino</Product>
-    <Description>Glarduino is a asynchronous communication library for.NET/C# Serial Ports such as Arduino. This implementation supports Unity3D integration.</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Glarduino is an asynchronous communication library for .NET/C# Serial Ports and Arduino.</Description>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/HelloKitty/Glarduino</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HelloKitty/Glarduino</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
