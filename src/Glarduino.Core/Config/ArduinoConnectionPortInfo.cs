@@ -25,13 +25,13 @@ namespace Glarduino
 		/// exception is thrown when such operations take more than this time
 		/// to complete.
 		/// </summary>
-		public int ReadTimeout { get; } = 100;
+		public int ReadTimeout { get; } = 2000;
 
 		/// <summary>
 		/// Amount of milliseconds alloted to a single write. An exception is thrown
 		/// when such operations take more than this time to complete.
 		/// </summary>
-		public int WriteTimeout { get; } = 100;
+		public int WriteTimeout { get; } = 2000;
 
 		public ArduinoPortConnectionInfo(string portName, int baudRate)
 		{
