@@ -33,6 +33,12 @@ namespace Glarduino
 		private bool isNewMessageAvailable { get; set; }
 
 		/// <summary>
+		/// Indicates if the message type is disposable.
+		/// Implements IDisposable.
+		/// </summary>
+		public static bool isDisposableType { get; } = typeof(IDisposable).IsAssignableFrom(typeof(TMessageType));
+
+		/// <summary>
 		/// Unity3D called update tick.
 		/// </summary>
 		void Update()
@@ -62,6 +68,10 @@ namespace Glarduino
 		{
 			lock(SyncObj)
 			{
+				//Assume it's been disposed of because it's been dispatched outside of our control.
+				if(isDisposableType && isNewMessageAvailable && !Equals(LatestMessage, default(TMessageType))) //ant not null
+					((IDisposable)LatestMessage).Dispose();
+
 				LatestMessage = message;
 				isNewMessageAvailable = true;
 			}
