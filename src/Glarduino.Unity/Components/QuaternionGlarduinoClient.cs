@@ -6,6 +6,12 @@ using UnityEngine;
 
 namespace Glarduino
 {
+	//Generic hack
+	public class QuatDispatcher : MainThreadUpdateDispatchLatestToListenerMessageDispatcher<RecyclableArraySegment<Quaternion>>
+	{
+
+	}
+
 	/// <summary>
 	/// <see cref="Quaternion"/> <see cref="RecyclableArraySegment{T}"/>-based implementation of <see cref="BaseUnityGlarduinoAdapterClient"/>.
 	/// </summary>
@@ -41,7 +47,7 @@ namespace Glarduino
 		/// <returns></returns>
 		public async Task Start()
 		{
-			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<RecyclableArraySegment<Quaternion>>>();
+			var dispatcher = gameObject.AddComponent<QuatDispatcher>();
 			dispatcher.Listener = (IMessageListener<RecyclableArraySegment<Quaternion>>)Listener;
 
 			UnityQuaternionSegmentGlarduinoClient client = new UnityQuaternionSegmentGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new HarcodedSizeQuaternionSegmentMessageDeserializerStrategy(ExpectedQuaternionCount), dispatcher);

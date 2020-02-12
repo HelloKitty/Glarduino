@@ -10,7 +10,7 @@ namespace Glarduino
 	/// Unity3D main-threaded/<see cref="Update"/>-based generic <see cref="IMessageDispatchingStrategy{TMessageType}"/> implementation.
 	/// </summary>
 	/// <typeparam name="TMessageType"></typeparam>
-	public sealed class MainThreadUpdateDispatchLatestToListenerMessageDispatcher<TMessageType> : MonoBehaviour, IMessageDispatchingStrategy<TMessageType>
+	public class MainThreadUpdateDispatchLatestToListenerMessageDispatcher<TMessageType> : MonoBehaviour, IMessageDispatchingStrategy<TMessageType>
 	{
 		/// <summary>
 		/// Syncronization object.

@@ -210,6 +210,12 @@
             Mutable <see cref="T:System.Boolean"/> indicating if a new message has been sent between the last frame.
             </summary>
         </member>
+        <member name="P:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.isDisposableType">
+            <summary>
+            Indicates if the message type is disposable.
+            Implements IDisposable.
+            </summary>
+        </member>
         <member name="M:Glarduino.MainThreadUpdateDispatchLatestToListenerMessageDispatcher`1.Update">
             <summary>
             Unity3D called update tick.

@@ -6,6 +6,12 @@ using UnityEngine;
 
 namespace Glarduino
 {
+	//Generic hack
+	public class StringDispatcher : MainThreadUpdateDispatchLatestToListenerMessageDispatcher<string>
+	{
+
+	}
+
 	/// <summary>
 	/// Ardity compatibility adapter for string-based message reading and dispatching.
 	/// </summary>
@@ -31,7 +37,7 @@ namespace Glarduino
 		/// <returns></returns>
 		private async Task Start()
 		{
-			var dispatcher = gameObject.AddComponent<MainThreadUpdateDispatchLatestToListenerMessageDispatcher<string>>();
+			var dispatcher = gameObject.AddComponent<StringDispatcher>();
 			dispatcher.Listener = (IMessageListener<string>)Listener;
 
 			UnityStringGlarduinoClient client = new UnityStringGlarduinoClient(new ArduinoPortConnectionInfo(PortName, BaudRate), new StringMessageDeserializerStrategy(), dispatcher);
