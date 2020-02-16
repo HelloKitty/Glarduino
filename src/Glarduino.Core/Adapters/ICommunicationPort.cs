@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glarduino
@@ -39,7 +40,8 @@ namespace Glarduino
 		/// <summary>
 		/// Synchronously opens the communication port.
 		/// </summary>
-		void Open();
+		/// <param name="cancelToken"></param>
+		void Open(CancellationToken cancelToken = default(CancellationToken));
 
 		/// <summary>
 		/// Synchronously closes the communication port.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Glarduino
 	/// <summary>
 	/// Base Unity3D client adapter for editor component access to the Glarduino library.
 	/// </summary>
-	public abstract class BaseUnityGlarduinoAdapterClient : MonoBehaviour
+	public abstract class BaseUnityGlarduinoAdapterClient : MonoBehaviour, IDisposable
 	{
 		/// <summary>
 		/// The string name of the communication port.
@@ -41,13 +42,15 @@ namespace Glarduino
 		/// </summary>
 		protected IDisposable CurrentClient { get; private set; }
 
+		private CancellationTokenSource RunCancelToken { get; } = new CancellationTokenSource();
+
 		/// <summary>
 		/// Called when the component is disable in Unity3D.
 		/// </summary>
 		void OnDisable()
 		{
 			//When disabled we should just dispose.
-			CurrentClient?.Dispose();
+			Dispose();
 		}
 
 		/// <summary>
@@ -56,7 +59,7 @@ namespace Glarduino
 		void OnApplicationQuit()
 		{
 			//When disabled we should just dispose.
-			CurrentClient?.Dispose();
+			Dispose();
 		}
 
 		/// <summary>
@@ -75,13 +78,20 @@ namespace Glarduino
 
 			await Task.Factory.StartNew(async () =>
 			{
-				await client.ConnectAsync()
+				await client.ConnectAsync(RunCancelToken.Token)
 					.ConfigureAwait(false);
 
-				await client.StartListeningAsync()
+				await client.StartListeningAsync(RunCancelToken.Token)
 					.ConfigureAwait(false);
 
-			}, TaskCreationOptions.LongRunning);
+			}, RunCancelToken.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+		}
+
+		public void Dispose()
+		{
+			RunCancelToken.Cancel();
+			CurrentClient?.Dispose();
+			RunCancelToken?.Dispose();
 		}
 	}
 }

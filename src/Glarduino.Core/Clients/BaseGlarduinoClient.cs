@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glarduino
@@ -85,14 +86,14 @@ namespace Glarduino
 		}
 
 		/// <inheritdoc />
-		public Task<bool> ConnectAsync()
+		public Task<bool> ConnectAsync(CancellationToken cancelToken = default(CancellationToken))
 		{
 			InternallyManagedPort.ReadTimeout = ConnectionInfo.ReadTimeout;
 			InternallyManagedPort.WriteTimeout = ConnectionInfo.WriteTimeout;
 
 			try
 			{
-				InternallyManagedPort.Open();
+				InternallyManagedPort.Open(cancelToken);
 			}
 			catch (Exception e)
 			{
@@ -107,17 +108,17 @@ namespace Glarduino
 		}
 
 		/// <inheritdoc />
-		public async Task StartListeningAsync()
+		public async Task StartListeningAsync(CancellationToken cancelToken = default(CancellationToken))
 		{
 			try
 			{
 				if (!isConnected)
 					throw new InvalidOperationException($"Cannot start listening with {nameof(StartListeningAsync)} when internal {nameof(SerialPort)} {InternallyManagedPort} is not connected/open.");
 
-				while (isConnected)
+				while (isConnected && !cancelToken.IsCancellationRequested)
 				{
 					//TODO: Handle cancellation tokens better.
-					TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort)
+					TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort, cancelToken)
 						.ConfigureAwait(false);
 
 					//A message was recieved and deserialized as the strategy implemented.

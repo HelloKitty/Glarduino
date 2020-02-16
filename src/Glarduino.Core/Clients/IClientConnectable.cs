@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glarduino
@@ -14,6 +15,6 @@ namespace Glarduino
 		/// Opens the underlying Arduino port.
 		/// </summary>
 		/// <returns></returns>
-		Task<bool> ConnectAsync();
+		Task<bool> ConnectAsync(CancellationToken cancelToken = default(CancellationToken));
 	}
 }

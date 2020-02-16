@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Glarduino
 {
@@ -34,7 +35,7 @@ namespace Glarduino
 			BaseStream = baseStream ?? throw new ArgumentNullException(nameof(baseStream));
 		}
 
-		public void Open()
+		public void Open(CancellationToken cancelToken = default(CancellationToken))
 		{
 			_isOpen = true;
 		}

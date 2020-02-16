@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 
 namespace Glarduino
 {
@@ -58,8 +59,9 @@ namespace Glarduino
 			InternalSerialPort.Dispose();
 		}
 
+		/// <param name="cancelToken"></param>
 		/// <inheritdoc />
-		public void Open()
+		public void Open(CancellationToken cancelToken = default(CancellationToken))
 		{
 			InternalSerialPort.Open();
 		}

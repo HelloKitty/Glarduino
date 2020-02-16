@@ -34,10 +34,11 @@
             The communication stream.
             </summary>
         </member>
-        <member name="M:Glarduino.ICommunicationPort.Open">
+        <member name="M:Glarduino.ICommunicationPort.Open(System.Threading.CancellationToken)">
             <summary>
             Synchronously opens the communication port.
             </summary>
+            <param name="cancelToken"></param>
         </member>
         <member name="M:Glarduino.ICommunicationPort.Close">
             <summary>
@@ -82,7 +83,8 @@
             Disposes the adapter which disposes of <see cref="P:Glarduino.SerialPortCommunicationPortAdapter.InternalSerialPort"/>.
             </summary>
         </member>
-        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Open">
+        <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Open(System.Threading.CancellationToken)">
+            <param name="cancelToken"></param>
             <inheritdoc />
         </member>
         <member name="M:Glarduino.SerialPortCommunicationPortAdapter.Close">
@@ -147,10 +149,10 @@
             <param name="messageDispatcher">The message dispatching strategy.</param>
             <param name="comPort">The specified communication port.</param>
         </member>
-        <member name="M:Glarduino.BaseGlarduinoClient`1.ConnectAsync">
+        <member name="M:Glarduino.BaseGlarduinoClient`1.ConnectAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Glarduino.BaseGlarduinoClient`1.StartListeningAsync">
+        <member name="M:Glarduino.BaseGlarduinoClient`1.StartListeningAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Glarduino.BaseGlarduinoClient`1.Dispose">
@@ -206,7 +208,7 @@
             Contract for types that are client connectable.
             </summary>
         </member>
-        <member name="M:Glarduino.IClientConnectable.ConnectAsync">
+        <member name="M:Glarduino.IClientConnectable.ConnectAsync(System.Threading.CancellationToken)">
             <summary>
             Opens the underlying Arduino port.
             </summary>
@@ -217,7 +219,7 @@
             Contract for types that are client listenable
             </summary>
         </member>
-        <member name="M:Glarduino.IClientListenable.StartListeningAsync">
+        <member name="M:Glarduino.IClientListenable.StartListeningAsync(System.Threading.CancellationToken)">
             <summary>
             Starts the client listening.
             </summary>

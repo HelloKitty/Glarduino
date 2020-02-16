@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Glarduino
@@ -14,6 +15,6 @@ namespace Glarduino
 		/// Starts the client listening.
 		/// </summary>
 		/// <returns>Awaitable that completes when the client finishes listening.</returns>
-		Task StartListeningAsync();
+		Task StartListeningAsync(CancellationToken cancelToken = default(CancellationToken));
 	}
 }
