@@ -69,7 +69,12 @@ namespace Glarduino
 		/// <inheritdoc />
 		public void Close()
 		{
-			InternalSerialPort.Close();
+			if (InternalSerialPort.IsOpen)
+			{
+				InternalSerialPort.DiscardInBuffer();
+				InternalSerialPort.DiscardOutBuffer();
+				InternalSerialPort.Close();
+			}
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace Glarduino
 		/// <typeparam name="TMessageType">The client message handling type.</typeparam>
 		/// <param name="client">The client instance.</param>
 		/// <returns>Awaitable for client start.</returns>
-		protected async Task StartClient<TMessageType>([NotNull] BaseGlarduinoClient<TMessageType> client)
+		protected Task StartClient<TMessageType>([NotNull] BaseGlarduinoClient<TMessageType> client)
 		{
 			CurrentClient = client ?? throw new ArgumentNullException(nameof(client));
 
@@ -76,7 +76,10 @@ namespace Glarduino
 			client.ConnectionEvents.OnClientDisconnected += (sender, args) => Debug.Log($"Port: {PortName} disconnected.");
 			client.OnExceptionEncountered += (sender, exception) => Debug.LogError($"Exception from Glardiuno Listener: {exception}");
 
-			await Task.Factory.StartNew(async () =>
+			//If there is no await here, it's because it was removed during a period of time
+			//when there was an unmanaged crash happening. And if it's not here, then it was the cause
+			//so don't readd it. If the await is back then it was back
+			Task.Factory.StartNew(async () =>
 			{
 				await client.ConnectAsync(RunCancelToken.Token)
 					.ConfigureAwait(false);
@@ -85,6 +88,8 @@ namespace Glarduino
 					.ConfigureAwait(false);
 
 			}, RunCancelToken.Token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
+
+			return Task.CompletedTask;
 		}
 
 		public void Dispose()

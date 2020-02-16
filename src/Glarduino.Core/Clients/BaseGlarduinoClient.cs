@@ -59,9 +59,16 @@ namespace Glarduino
 		protected BaseGlarduinoClient(ArduinoPortConnectionInfo connectionInfo, 
 			IMessageDeserializerStrategy<TMessageType> messageDeserializer, 
 			IMessageDispatchingStrategy<TMessageType> messageDispatcher)
-			: this(connectionInfo, messageDeserializer, messageDispatcher, new SerialPortCommunicationPortAdapter(new SerialPort(connectionInfo.PortName, connectionInfo.BaudRate)))
+			: this(connectionInfo, messageDeserializer, messageDispatcher, new SerialPortCommunicationPortAdapter(CreateNewSerialPort(connectionInfo)))
 		{
 
+		}
+
+		private static SerialPort CreateNewSerialPort(ArduinoPortConnectionInfo connectionInfo)
+		{
+			//Address issues in underlying stream opening: http://zachsaw.blogspot.com/2010/07/net-serialport-woes.html
+			SerialPortFixer.Execute(connectionInfo.PortName);
+			return new SerialPort(connectionInfo.PortName, connectionInfo.BaudRate);
 		}
 
 		/// <summary>
@@ -121,6 +128,10 @@ namespace Glarduino
 					TMessageType message = await MessageDeserializer.ReadMessageAsync(InternallyManagedPort, cancelToken)
 						.ConfigureAwait(false);
 
+					//Don't dispatch if canceled.
+					if (cancelToken.IsCancellationRequested || !isConnected)
+						return;
+
 					//A message was recieved and deserialized as the strategy implemented.
 					//Therefore we should assume we have a valid message and then pass it to the message dispatching strategy.
 					await MessageDispatcher.DispatchMessageAsync(message)
@@ -134,6 +145,8 @@ namespace Glarduino
 			}
 			finally
 			{
+				Dispose();
+
 				//TODO: Should we assume disconnection just because listening stopped?
 				_ConnectionEvents.InvokeClientDisconnected();
 			}
@@ -143,7 +156,9 @@ namespace Glarduino
 		public virtual void Dispose()
 		{
 			//We just dispose of the port.
-			InternallyManagedPort?.Close();
+			if (InternallyManagedPort.IsOpen)
+				InternallyManagedPort?.Close();
+				
 			InternallyManagedPort?.Dispose();
 		}
 	}

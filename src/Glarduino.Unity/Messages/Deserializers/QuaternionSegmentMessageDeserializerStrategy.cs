@@ -36,13 +36,32 @@ namespace Glarduino
 			//Now we should read the quats based on the provided count
 			var quatArray = ArrayPool<Quaternion>.Shared.Rent(quaternionCount);
 
-			for(int i = 0; i < quaternionCount; i++)
+			try
 			{
-				await serialPort.ReadAsync(SingleQuatBuffer, 0, SingleQuatBuffer.Length, cancellationToken);
-				quatArray[i] = new Quaternion(GetFloatFromQuatBuffer(3), GetFloatFromQuatBuffer(0), GetFloatFromQuatBuffer(1), GetFloatFromQuatBuffer(2));
-			}
+				for (int i = 0; i < quaternionCount && !cancellationToken.IsCancellationRequested; i++)
+				{
+					await serialPort.ReadAsync(SingleQuatBuffer, 0, SingleQuatBuffer.Length, cancellationToken);
 
-			return new RecyclableArraySegment<Quaternion>(quatArray, 0, quaternionCount);
+					//Just return whatever we have if cancelled.
+					if(cancellationToken.IsCancellationRequested)
+						return new RecyclableArraySegment<Quaternion>(quatArray, 0, quaternionCount);
+
+					//quatArray[i] = new Quaternion(GetFloatFromQuatBuffer(1), GetFloatFromQuatBuffer(2), GetFloatFromQuatBuffer(3), GetFloatFromQuatBuffer(0));
+					quatArray[i] = new Quaternion(GetFloatFromQuatBuffer(0), GetFloatFromQuatBuffer(1), GetFloatFromQuatBuffer(2), GetFloatFromQuatBuffer(3));
+					Debug.Log($"Quat log: {quatArray[i].x} {quatArray[i].y} {quatArray[i].z} {quatArray[i].w}");
+				}
+
+				return new RecyclableArraySegment<Quaternion>(quatArray, 0, quaternionCount);
+			}
+			catch (Exception e)
+			{
+				throw;
+			}
+			finally
+			{
+				//If exceptions happen let's dipose of the array
+				ArrayPool<Quaternion>.Shared.Return(quatArray);
+			}
 		}
 
 		/// <summary>

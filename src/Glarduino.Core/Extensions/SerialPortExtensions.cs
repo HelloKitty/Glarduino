@@ -39,7 +39,7 @@ namespace Glarduino
 			if (!serialPort.IsOpen)
 				throw new InvalidOperationException($"Provided {nameof(serialPort)} is not in an open state. Cannot read.");
 
-			for (int i = 0; i < count;)
+			for (int i = 0; i < count && !cancellationToken.IsCancellationRequested;)
 			{
 				int readBytes = await serialPort.BaseStream.ReadAsync(buffer, i + offset, count - i, cancellationToken)
 					.ConfigureAwait(false);
