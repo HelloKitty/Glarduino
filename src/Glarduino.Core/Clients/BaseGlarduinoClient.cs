@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Reinterpret.Net;
 
 namespace Glarduino
 {
+	internal static class GlarduinoClient
+	{
+		[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int memcmp(byte[] b1, byte[] b2, long count);
+	}
+
 	/// <summary>
 	/// Base type for any Glarduino Arduino connected client.
 	/// </summary>
@@ -93,7 +102,7 @@ namespace Glarduino
 		}
 
 		/// <inheritdoc />
-		public Task<bool> ConnectAsync(CancellationToken cancelToken = default(CancellationToken))
+		public async Task<bool> ConnectAsync(CancellationToken cancelToken = default(CancellationToken))
 		{
 			InternallyManagedPort.ReadTimeout = ConnectionInfo.ReadTimeout;
 			InternallyManagedPort.WriteTimeout = ConnectionInfo.WriteTimeout;
@@ -109,9 +118,51 @@ namespace Glarduino
 
 			//Alert subscribers that the client has connected.
 			if (InternallyManagedPort.IsOpen)
-				_ConnectionEvents.InvokeClientConnected();
+			{
+				byte[] bytes = ArrayPool<byte>.Shared.Rent(4);
 
-			return Task.FromResult(InternallyManagedPort.IsOpen);
+				try
+				{
+					//TODO: Use enum for connected state
+					InternallyManagedPort.BaseStream.WriteByte(1);
+
+					//Let's read 4 bytes the first time because this optimizes the case where it's the first recieved thing.
+					await InternallyManagedPort.ReadAsync(bytes, 0, 4);
+
+					while (!cancelToken.IsCancellationRequested)
+					{
+						//First pass through we're checking if the original bytes read are the magic number, quick easy escape if so.
+						if (GlarduinoClient.memcmp(bytes, GlarduinoClientConstants.MagicalByteNumber, sizeof(int)) == 0)
+							break; //found
+
+						//We shift down each byte to get the next LOGICAL 4 byte sequence.
+						for (int i = 0; i < bytes.Length - 1; i++)
+							bytes[i] = bytes[i + 1];
+
+						//Read one byte into the buffer at the 4th index so we can check the next 4byte sequence.
+						await InternallyManagedPort.ReadAsync(bytes, 3, 1);
+					}
+
+					//TODO: Should we throw?? It likely means we didn't find the bytes and connection was cancelled instead.
+					if (cancelToken.IsCancellationRequested)
+						return false;
+				}
+				catch (Exception)
+				{
+					throw;
+				}
+				finally
+				{
+					ArrayPool<byte>.Shared.Return(bytes);
+				}
+			}
+			else
+				throw new InvalidOperationException($"Failed to open a Serial Port on {ConnectionInfo.PortName}");
+
+			//Dispatch connections
+			_ConnectionEvents.InvokeClientConnected();
+
+			return InternallyManagedPort.IsOpen;
 		}
 
 		/// <inheritdoc />

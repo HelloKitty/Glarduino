@@ -203,6 +203,18 @@
             <param name="messageDispatcher">The message dispatching strategy.</param>
             <param name="comPort">The specified communication port.</param>
         </member>
+        <member name="F:Glarduino.GlarduinoClientConstants.GLARDUINO_CONNECTION_START_MAGIC_NUMBER">
+            <summary>
+            The magical number constant.
+            Based on: 0xD9B4BEF9
+            See: https://bitcoin.stackexchange.com/questions/43189/what-is-the-magic-number-used-in-the-block-structure
+            </summary>
+        </member>
+        <member name="F:Glarduino.GlarduinoClientConstants.MagicalByteNumber">
+            <summary>
+            Represents the 4-byte representation of <see cref="F:Glarduino.GlarduinoClientConstants.GLARDUINO_CONNECTION_START_MAGIC_NUMBER"/>.
+            </summary>
+        </member>
         <member name="T:Glarduino.IClientConnectable">
             <summary>
             Contract for types that are client connectable.
