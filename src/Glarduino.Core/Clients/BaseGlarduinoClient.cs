@@ -155,12 +155,10 @@ namespace Glarduino
 				{
 					ArrayPool<byte>.Shared.Return(bytes);
 				}
-			}
-			else
-				throw new InvalidOperationException($"Failed to open a Serial Port on {ConnectionInfo.PortName}");
 
-			//Dispatch connections
-			_ConnectionEvents.InvokeClientConnected();
+				//Dispatch connections
+				_ConnectionEvents.InvokeClientConnected();
+			}
 
 			return InternallyManagedPort.IsOpen;
 		}
