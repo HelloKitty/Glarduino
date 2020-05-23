@@ -48,7 +48,9 @@ namespace Glarduino
 
 					//quatArray[i] = new Quaternion(GetFloatFromQuatBuffer(1), GetFloatFromQuatBuffer(2), GetFloatFromQuatBuffer(3), GetFloatFromQuatBuffer(0));
 					quatArray[i] = new Quaternion(GetFloatFromQuatBuffer(0), GetFloatFromQuatBuffer(1), GetFloatFromQuatBuffer(2), GetFloatFromQuatBuffer(3));
-					Debug.Log($"Quat log: {quatArray[i].x} {quatArray[i].y} {quatArray[i].z} {quatArray[i].w}");
+
+					if (GlardunioStaticConfig.DebugLogging)
+						Debug.Log($"Quat log: {quatArray[i].x} {quatArray[i].y} {quatArray[i].z} {quatArray[i].w}");
 				}
 
 				return new RecyclableArraySegment<Quaternion>(quatArray, 0, quaternionCount);

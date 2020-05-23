@@ -266,6 +266,17 @@
             when such operations take more than this time to complete.
             </summary>
         </member>
+        <member name="T:Glarduino.GlardunioStaticConfig">
+            <summary>
+            Static/global configuration for Glardunio.
+            </summary>
+        </member>
+        <member name="P:Glarduino.GlardunioStaticConfig.DebugLogging">
+            <summary>
+            Mutable static configuration property that determines if
+            Glardunio will spit out debug logging info.
+            </summary>
+        </member>
         <member name="T:Glarduino.ConnectionEvents">
             <summary>
             Default implementation of <see cref="T:Glarduino.IConnectionEventsSubscribable"/>.
